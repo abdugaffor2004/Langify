@@ -2,15 +2,14 @@ import { Button, Container, Grid, Textarea, Alert } from '@mantine/core';
 import { useState, useCallback } from 'react';
 import { translate } from 'google-translate-api-browser';
 import { useMutation } from '@tanstack/react-query';
-import useDebounce from '../hooks/useDebounce';
 import styles from './Translation.module.css';
 
 export const Translation = () => {
   const [query, setQuery] = useState('');
-  const debouncedValue = useDebounce(query).trim();
+  const clearQuery = query.trim();  
 
   const toTranslate = async () => {
-    return await translate(debouncedValue, {
+    return await translate(clearQuery, {
       to: 'ru',
       corsUrl: 'http://cors-anywhere.herokuapp.com/',
     });
@@ -21,10 +20,10 @@ export const Translation = () => {
   });
 
   const handleTranslate = useCallback(() => {
-    if (debouncedValue !== '') {
+    if (clearQuery !== '') {
       mutate();
     }
-  }, [debouncedValue, mutate]);
+  }, [clearQuery, mutate]);
 
   const handleInputChange = event => {
     setQuery(event.currentTarget.value);
@@ -49,7 +48,7 @@ export const Translation = () => {
           <Button
             onClick={handleTranslate}
             size="md"
-            disabled={isPending || !debouncedValue}
+            disabled={isPending || !clearQuery}
             loading={isPending}
             className={styles.buttonTransition}
           >
