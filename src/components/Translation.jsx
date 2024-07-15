@@ -6,30 +6,27 @@ import styles from './Translation.module.css';
 
 export const Translation = () => {
   const [query, setQuery] = useState('');
-  const clearQuery = query.trim();  
+  const trimmedQuery = query.trim();
 
-  const toTranslate = async () => {
-    return await translate(clearQuery, {
-      to: 'ru',
-      corsUrl: 'http://cors-anywhere.herokuapp.com/',
-    });
-  };
-
-  let { mutate, data, isError, isPending, error } = useMutation({
-    mutationFn: toTranslate,
+  const { mutate, data, isError, isPending, error } = useMutation({
+    mutationFn: () =>
+      translate(trimmedQuery, {
+        to: 'ru',
+        corsUrl: 'http://cors-anywhere.herokuapp.com/',
+      }),
   });
 
   const handleTranslate = useCallback(() => {
-    if (clearQuery !== '') {
-      mutate();
+    if (trimmedQuery === '') {
+      throw new Error(
+        'There is no input value, please provide some meaningfull data for translation',
+      );
     }
-  }, [clearQuery, mutate]);
+    mutate();
+  }, [trimmedQuery, mutate]);
 
   const handleInputChange = event => {
     setQuery(event.currentTarget.value);
-    if(event.currentTarget.value.trim() === ''){
-      data.text = ''
-    }
   };
 
   return (
@@ -47,13 +44,13 @@ export const Translation = () => {
           />
         </Grid.Col>
 
-        <Grid.Col className={styles.centered} span={2}>
+        <Grid.Col className={styles.middleActions} span={2}>
           <Button
             onClick={handleTranslate}
             size="md"
-            disabled={isPending || !clearQuery}
+            disabled={!trimmedQuery}
             loading={isPending}
-            className={styles.buttonTransition}
+            className={styles.translateButton}
           >
             {'Translate ->'}
           </Button>
@@ -61,7 +58,7 @@ export const Translation = () => {
 
         <Grid.Col span={5}>
           <Textarea
-            value={data ? data.text : ''}
+            value={data?.text ?? ''}
             autosize
             variant="filled"
             size="lg"

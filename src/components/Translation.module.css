@@ -1,9 +1,9 @@
-.centered {
+.middleActions {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.buttonTransition {
+.translateButton {
   transition: background-color 0.3s ease, color 0.3s ease, opacity 0.3s ease;
 }
