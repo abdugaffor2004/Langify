@@ -3,9 +3,9 @@ import { useEffect, useState, useCallback } from 'react';
 import { translate } from 'google-translate-api-browser';
 import { useQuery } from '@tanstack/react-query';
 import useDebounce from '../hooks/useDebounce';
-export const InputBox = () => {
-  const [value, setValue] = useState('');
-  const debouncedValue = useDebounce(value, 5);
+export const Translation = () => {
+  const [query, setQuery] = useState('');
+  const debouncedValue = useDebounce(query, 5);
   const [translatedText, setTranslatedText] = useState('');
 
   const toTranslate = async () => {
@@ -37,7 +37,7 @@ export const InputBox = () => {
   }, [debouncedValue, refetch]);
 
   const handleInputChange = event => {
-    setValue(event.currentTarget.value);
+    setQuery(event.currentTarget.value);
     if (event.currentTarget.value.trim() === '') {
       setTranslatedText('');
     }
@@ -48,7 +48,7 @@ export const InputBox = () => {
       <Grid>
         <Grid.Col span={5}>
           <Textarea
-            value={value}
+            value={query}
             onChange={handleInputChange}
             autosize
             variant="filled"
