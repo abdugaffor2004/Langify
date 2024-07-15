@@ -15,7 +15,7 @@ export const Translation = () => {
     });
   };
 
-  const { mutate, data, isError, isPending, error } = useMutation({
+  let { mutate, data, isError, isPending, error } = useMutation({
     mutationFn: toTranslate,
   });
 
@@ -27,6 +27,9 @@ export const Translation = () => {
 
   const handleInputChange = event => {
     setQuery(event.currentTarget.value);
+    if(event.currentTarget.value.trim() === ''){
+      data.text = ''
+    }
   };
 
   return (
