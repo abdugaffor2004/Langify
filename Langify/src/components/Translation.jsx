@@ -21,7 +21,6 @@ export const Translation = () => {
     queryKey: ['translationText', debouncedValue],
     queryFn: toTranslate,
     enabled: false,
-    cacheTime: 5 * 60 * 1000,
   });
 
   useEffect(() => {
