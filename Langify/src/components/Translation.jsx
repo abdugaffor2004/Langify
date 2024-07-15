@@ -1,14 +1,13 @@
 import { Button, Container, Grid, Textarea, Alert } from '@mantine/core';
-import { useEffect, useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { translate } from 'google-translate-api-browser';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import useDebounce from '../hooks/useDebounce';
-
+import styles from './Translation.module.css';
 
 export const Translation = () => {
   const [query, setQuery] = useState('');
-  const debouncedValue = useDebounce(query, 5);
-  const [translatedText, setTranslatedText] = useState('');
+  const debouncedValue = useDebounce(query).trim();
 
   const toTranslate = async () => {
     return await translate(debouncedValue, {
@@ -17,31 +16,18 @@ export const Translation = () => {
     });
   };
 
-  const { isSuccess, isError, data, isFetching, error, refetch } = useQuery({
-    queryKey: ['translationText', debouncedValue],
-    queryFn: toTranslate,
-    enabled: false,
+  const { mutate, data, isError, isPending, error } = useMutation({
+    mutationFn: toTranslate,
   });
 
-  useEffect(() => {
-    if (isSuccess) {
-      setTranslatedText(data.text);
-    } else if (isError) {
-      setTranslatedText('');
-    }
-  }, [data, isSuccess, isError]);
-
   const handleTranslate = useCallback(() => {
-    if (debouncedValue.trim() !== '') {
-      refetch();
+    if (debouncedValue !== '') {
+      mutate();
     }
-  }, [debouncedValue, refetch]);
+  }, [debouncedValue, mutate]);
 
   const handleInputChange = event => {
     setQuery(event.currentTarget.value);
-    if (event.currentTarget.value.trim() === '') {
-      setTranslatedText('');
-    }
   };
 
   return (
@@ -59,27 +45,21 @@ export const Translation = () => {
           />
         </Grid.Col>
 
-        <Grid.Col
-          style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-          span={2}
-        >
+        <Grid.Col className={styles.centered} span={2}>
           <Button
             onClick={handleTranslate}
             size="md"
-            disabled={isFetching || !debouncedValue.trim()}
-            loading={isFetching}
-            style={{
-              transition: 'background-color 0.3s ease, color 0.3s ease, opacity 0.3s ease',
-            }}
-
+            disabled={isPending || !debouncedValue}
+            loading={isPending}
+            className={styles.buttonTransition}
           >
-            { 'Translate ->'}
+            {'Translate ->'}
           </Button>
         </Grid.Col>
 
         <Grid.Col span={5}>
           <Textarea
-            value={translatedText}
+            value={data ? data.text : ''}
             autosize
             variant="filled"
             size="lg"
@@ -87,9 +67,9 @@ export const Translation = () => {
             minRows={8}
             readOnly
           />
-          {error && (
+          {isError && (
             <Alert title="Error" color="red">
-              {error}
+              {error?.message}
             </Alert>
           )}
         </Grid.Col>
