@@ -3,9 +3,9 @@ import { useEffect, useState, useCallback } from 'react';
 import { translate } from 'google-translate-api-browser';
 import { useQuery } from '@tanstack/react-query';
 import useDebounce from '../hooks/useDebounce';
-const InputBox = () => {
+export const InputBox = () => {
   const [value, setValue] = useState('');
-  const debouncedValue = useDebounce(value, 500);
+  const debouncedValue = useDebounce(value, 5);
   const [translatedText, setTranslatedText] = useState('');
 
   const toTranslate = async () => {
@@ -95,5 +95,3 @@ const InputBox = () => {
     </Container>
   );
 };
-
-export default InputBox;

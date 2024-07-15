@@ -1,14 +1,10 @@
-import InputBox from './components/InputBox';
+import { InputBox } from './components/InputBox';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const queryClient = new QueryClient();
 
-function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <InputBox />
-    </QueryClientProvider>
-  );
-}
-
-export default App;
+export const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <InputBox />
+  </QueryClientProvider>
+);
