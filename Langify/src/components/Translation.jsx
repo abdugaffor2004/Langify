@@ -3,6 +3,8 @@ import { useEffect, useState, useCallback } from 'react';
 import { translate } from 'google-translate-api-browser';
 import { useQuery } from '@tanstack/react-query';
 import useDebounce from '../hooks/useDebounce';
+
+
 export const Translation = () => {
   const [query, setQuery] = useState('');
   const debouncedValue = useDebounce(query, 5);
@@ -66,12 +68,13 @@ export const Translation = () => {
             onClick={handleTranslate}
             size="md"
             disabled={isFetching || !debouncedValue.trim()}
+            loading={isFetching}
             style={{
               transition: 'background-color 0.3s ease, color 0.3s ease, opacity 0.3s ease',
-              opacity: isFetching || !debouncedValue.trim() ? 0.5 : 1,
             }}
+
           >
-            {isFetching ? 'Translating...' : 'Translate ->'}
+            { 'Translate ->'}
           </Button>
         </Grid.Col>
 
