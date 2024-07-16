@@ -1,13 +1,20 @@
 .middleActions {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
 }
 
 .translateButton {
   transition: background-color 0.3s ease, color 0.3s ease, opacity 0.3s ease;
+  margin: 0  0 auto 0 ;
 }
 
 .textarea{
   margin-top: 20px;
 }
+
+.swapButton {
+  margin-bottom: auto; /* Помещает кнопку с иконкой вверху */
+}
+

@@ -2,15 +2,16 @@ import { Button, Container, Grid, Alert, Textarea } from '@mantine/core';
 import { useState, useCallback } from 'react';
 import { translate } from 'google-translate-api-browser';
 import { useMutation } from '@tanstack/react-query';
-import styles from './Translation.module.css';
 import { LanguagesDropdown } from './LanguagesDropdown';
+import { TbArrowsLeftRight } from 'react-icons/tb';
+import styles from './Translation.module.css';
 
 export const Translation = () => {
   const [query, setQuery] = useState('');
   const trimmedQuery = query.trim();
 
-  const [translateFromLang, setTranslateFromLang] = useState('en');
-  const [translateToLang, setTranslateToLang] = useState('ru');
+  let [translateFromLang, setTranslateFromLang] = useState('en');
+  let [translateToLang, setTranslateToLang] = useState('ru');
 
   const { mutate, data, isError, isPending, error } = useMutation({
     mutationFn: () =>
@@ -34,6 +35,11 @@ export const Translation = () => {
     setQuery(event.currentTarget.value);
   };
 
+  const swapLanguage = () => {
+    setTranslateFromLang(translateToLang);
+    setTranslateToLang(translateFromLang);
+  };
+
   return (
     <Container size="xl" mt="lg">
       <Grid>
@@ -55,12 +61,16 @@ export const Translation = () => {
         </Grid.Col>
 
         <Grid.Col className={styles.middleActions} span={2}>
+          <Button onClick={swapLanguage} variant="gradient" className={styles.swapButton}>
+            <TbArrowsLeftRight />
+          </Button>
           <Button
             onClick={handleTranslate}
             size="md"
             disabled={!trimmedQuery}
             loading={isPending}
             className={styles.translateButton}
+            variant="gradient"
           >
             {'Translate ->'}
           </Button>
