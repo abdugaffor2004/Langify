@@ -9,14 +9,14 @@ export const Translation = () => {
   const [query, setQuery] = useState('');
   const trimmedQuery = query.trim();
 
-  let [translateFromLang, setTranslateFromLang] = useState('en');
-  let [translateToLang, setTranslateToLang] = useState('ru');
+  const [source, setSource] = useState('en');
+  const [target, setTarget] = useState('ru');
 
   const { mutate, data, isError, isPending, error } = useMutation({
     mutationFn: () =>
       translate(trimmedQuery, {
-        to: translateToLang,
-        from: translateFromLang,
+        to: target,
+        from: source,
         corsUrl: 'http://cors-anywhere.herokuapp.com/',
       }),
   });
@@ -39,8 +39,8 @@ export const Translation = () => {
       <Grid>
         <Grid.Col span={5}>
           <LanguagesDropdown
-            currentLang={translateFromLang}
-            setCurrentLang={setTranslateFromLang}
+            currentLang={source}
+            setCurrentLang={setSource}
           />
           <Textarea
             className={styles.textarea}
@@ -61,14 +61,13 @@ export const Translation = () => {
             disabled={!trimmedQuery}
             loading={isPending}
             className={styles.translateButton}
-            variant="gradient"
           >
             {'Translate ->'}
           </Button>
         </Grid.Col>
 
         <Grid.Col span={5}>
-          <LanguagesDropdown currentLang={translateToLang} setCurrentLang={setTranslateToLang} />
+          <LanguagesDropdown currentLang={target} setCurrentLang={setTarget} />
           <Textarea
             className={styles.textarea}
             value={data?.text ?? ''}
