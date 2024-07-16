@@ -1,6 +1,6 @@
-export const LANGUAGES = [
-    { id: 'en', label: 'English' },
-    { id: 'ru', label: 'Russian' },
-    { id: 'zh', label: 'Сhinese' },
-    { id: 'es', label: 'Spanish' },
-  ]
+export const LANGUAGES = {
+  en: 'English',
+  ru: 'Russian',
+  zh: 'Chinese',
+  es: 'Spanish',
+};

@@ -2,7 +2,7 @@ import { Button, Container, Grid, Alert, Textarea } from '@mantine/core';
 import { useState, useCallback } from 'react';
 import { translate } from 'google-translate-api-browser';
 import { useMutation } from '@tanstack/react-query';
-import { LanguagesDropdown } from './LanguagesDropdown';
+import { LangSelect } from '../LangSelect/LangSelect';
 import styles from './Translation.module.css';
 
 export const Translation = () => {
@@ -38,7 +38,7 @@ export const Translation = () => {
     <Container size="xl" mt="lg">
       <Grid>
         <Grid.Col span={5}>
-          <LanguagesDropdown currentLang={source} setCurrentLang={setSource} />
+          <LangSelect value={source} onChange={setSource} />
           <Textarea
             className={styles.textarea}
             value={query}
@@ -46,7 +46,6 @@ export const Translation = () => {
             autosize
             variant="filled"
             size="lg"
-            aria-label="English"
             minRows={8}
           />
         </Grid.Col>
@@ -64,14 +63,13 @@ export const Translation = () => {
         </Grid.Col>
 
         <Grid.Col span={5}>
-          <LanguagesDropdown currentLang={target} setCurrentLang={setTarget} />
+          <LangSelect value={target} onChange={setTarget} />
           <Textarea
             className={styles.textarea}
             value={data?.text ?? ''}
             autosize
             variant="filled"
             size="lg"
-            aria-label="Russian"
             minRows={8}
             readOnly
           />
