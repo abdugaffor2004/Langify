@@ -38,10 +38,7 @@ export const Translation = () => {
     <Container size="xl" mt="lg">
       <Grid>
         <Grid.Col span={5}>
-          <LanguagesDropdown
-            currentLang={source}
-            setCurrentLang={setSource}
-          />
+          <LanguagesDropdown currentLang={source} setCurrentLang={setSource} />
           <Textarea
             className={styles.textarea}
             value={query}
