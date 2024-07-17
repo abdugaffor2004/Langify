@@ -2,7 +2,7 @@ import { Button, Container, Grid, Alert, Textarea } from '@mantine/core';
 import { useState, useCallback } from 'react';
 import { translate } from 'google-translate-api-browser';
 import { useMutation } from '@tanstack/react-query';
-import { LangSelect } from '../LangSelect/LangSelect';
+import { LangSelect } from '../LangSelect/';
 import styles from './Translation.module.css';
 
 export const Translation = () => {
