@@ -1,17 +1,22 @@
-import { Button, Container, Grid, Textarea, Alert } from '@mantine/core';
+import { Button, Container, Grid, Alert, Textarea } from '@mantine/core';
 import { useState, useCallback } from 'react';
 import { translate } from 'google-translate-api-browser';
 import { useMutation } from '@tanstack/react-query';
+import { LangSelect } from '../LangSelect';
 import styles from './Translation.module.css';
 
 export const Translation = () => {
   const [query, setQuery] = useState('');
   const trimmedQuery = query.trim();
 
+  const [source, setSource] = useState('en');
+  const [target, setTarget] = useState('ru');
+
   const { mutate, data, isError, isPending, error } = useMutation({
     mutationFn: () =>
       translate(trimmedQuery, {
-        to: 'ru',
+        to: target,
+        from: source,
         corsUrl: 'http://cors-anywhere.herokuapp.com/',
       }),
   });
@@ -33,13 +38,14 @@ export const Translation = () => {
     <Container size="xl" mt="lg">
       <Grid>
         <Grid.Col span={5}>
+          <LangSelect value={source} onChange={setSource} />
           <Textarea
+            className={styles.textarea}
             value={query}
             onChange={handleInputChange}
             autosize
             variant="filled"
             size="lg"
-            label="English"
             minRows={8}
           />
         </Grid.Col>
@@ -57,15 +63,17 @@ export const Translation = () => {
         </Grid.Col>
 
         <Grid.Col span={5}>
+          <LangSelect value={target} onChange={setTarget} />
           <Textarea
+            className={styles.textarea}
             value={data?.text ?? ''}
             autosize
             variant="filled"
             size="lg"
-            label="Russian"
             minRows={8}
             readOnly
           />
+
           {isError && (
             <Alert title="Error" color="red">
               {error?.message}
