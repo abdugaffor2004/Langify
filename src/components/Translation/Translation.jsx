@@ -3,6 +3,7 @@ import { useState, useCallback } from 'react';
 import { translate } from 'google-translate-api-browser';
 import { useMutation } from '@tanstack/react-query';
 import { LangSelect } from '../LangSelect';
+import { TbArrowsLeftRight } from 'react-icons/tb';
 import styles from './Translation.module.css';
 
 export const Translation = () => {
@@ -34,6 +35,11 @@ export const Translation = () => {
     setQuery(event.currentTarget.value);
   };
 
+  const swapLanguage = () => {
+    setSource(target);
+    setTarget(source);
+  };
+
   return (
     <Container size="xl" mt="lg">
       <Grid>
@@ -51,6 +57,9 @@ export const Translation = () => {
         </Grid.Col>
 
         <Grid.Col className={styles.middleActions} span={2}>
+          <Button onClick={swapLanguage} className={styles.swapButton}>
+            <TbArrowsLeftRight />
+          </Button>
           <Button
             onClick={handleTranslate}
             size="md"
