@@ -9,23 +9,27 @@ import styles from './Translation.module.css';
 export const Translation = () => {
   const [query, setQuery] = useState('');
   const trimmedQuery = query.trim();
+  const [translatedText, setTranslatedText] = useState('');
 
   const [source, setSource] = useState('en');
   const [target, setTarget] = useState('ru');
 
-  const { mutate, data, isError, isPending, error } = useMutation({
+  const { mutate, isError, isPending, error } = useMutation({
     mutationFn: () =>
       translate(trimmedQuery, {
         to: target,
         from: source,
         corsUrl: 'http://cors-anywhere.herokuapp.com/',
       }),
+    onSuccess: data => {
+      setTranslatedText(data.text);
+    },
   });
 
   const handleTranslate = useCallback(() => {
     if (trimmedQuery === '') {
       throw new Error(
-        'There is no input value, please provide some meaningfull data for translation',
+        'There is no input value, please provide some meaningful data for translation',
       );
     }
     mutate();
@@ -38,6 +42,8 @@ export const Translation = () => {
   const swapLanguage = () => {
     setSource(target);
     setTarget(source);
+    setQuery(translatedText);
+    setTranslatedText(query);
   };
 
   return (
@@ -46,6 +52,7 @@ export const Translation = () => {
         <Grid.Col span={5}>
           <LangSelect value={source} onChange={setSource} />
           <Textarea
+            placeholder="Text"
             className={styles.textarea}
             value={query}
             onChange={handleInputChange}
@@ -74,8 +81,9 @@ export const Translation = () => {
         <Grid.Col span={5}>
           <LangSelect value={target} onChange={setTarget} />
           <Textarea
+            placeholder="Translation"
             className={styles.textarea}
-            value={data?.text ?? ''}
+            value={translatedText}
             autosize
             variant="filled"
             size="lg"
