@@ -1,28 +1,33 @@
 import { Button, Container, Grid, Alert, Textarea } from '@mantine/core';
-import { useState, useCallback } from 'react';
+import { useCallback, useReducer } from 'react';
 import { translate } from 'google-translate-api-browser';
 import { useMutation } from '@tanstack/react-query';
 import { LangSelect } from '../LangSelect';
 import { TbArrowsLeftRight } from 'react-icons/tb';
 import styles from './Translation.module.css';
+import {
+  initialState,
+  reducer,
+  setQuery,
+  setSource,
+  setTarget,
+  setTranslatedText,
+  swapLanguages,
+} from './reducer';
 
 export const Translation = () => {
-  const [query, setQuery] = useState('');
-  const trimmedQuery = query.trim();
-  const [translatedText, setTranslatedText] = useState('');
-
-  const [source, setSource] = useState('en');
-  const [target, setTarget] = useState('ru');
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const trimmedQuery = state.query?.trim();
 
   const { mutate, isError, isPending, error } = useMutation({
     mutationFn: () =>
       translate(trimmedQuery, {
-        to: target,
-        from: source,
+        to: state.target,
+        from: state.source,
         corsUrl: 'http://cors-anywhere.herokuapp.com/',
       }),
     onSuccess: data => {
-      setTranslatedText(data.text);
+      dispatch(setTranslatedText(data.text));
     },
   });
 
@@ -36,25 +41,22 @@ export const Translation = () => {
   }, [trimmedQuery, mutate]);
 
   const handleInputChange = event => {
-    setQuery(event.currentTarget.value);
+    dispatch(setQuery(event.currentTarget.value));
   };
 
   const swapLanguage = () => {
-    setSource(target);
-    setTarget(source);
-    setQuery(translatedText);
-    setTranslatedText(query);
+    dispatch(swapLanguages());
   };
 
   return (
     <Container size="xl" mt="lg">
       <Grid>
         <Grid.Col span={5}>
-          <LangSelect value={source} onChange={setSource} />
+          <LangSelect value={state.source} onChange={value => dispatch(setSource(value))} />
           <Textarea
             placeholder="Text"
             className={styles.textarea}
-            value={query}
+            value={state.query}
             onChange={handleInputChange}
             autosize
             variant="filled"
@@ -79,11 +81,11 @@ export const Translation = () => {
         </Grid.Col>
 
         <Grid.Col span={5}>
-          <LangSelect value={target} onChange={setTarget} />
+          <LangSelect value={state.target} onChange={value => dispatch(setTarget(value))} />
           <Textarea
             placeholder="Translation"
             className={styles.textarea}
-            value={translatedText}
+            value={state.translatedText}
             autosize
             variant="filled"
             size="lg"
