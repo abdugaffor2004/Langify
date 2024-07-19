@@ -8,11 +8,11 @@ import styles from './Translation.module.css';
 import {
   INITIAL_TRANSLATION_STATE,
   translationReducer,
-  setQuery,
-  setSource,
-  setTarget,
-  setTranslatedText,
-  swapLanguages,
+  SET_TRANSLATED_TEXT_ACTION_TYPE,
+  SET_QUERY_ACTION_TYPE,
+  SET_SOURCE_ACTION_TYPE,
+  SWAP_LANGUAGES_ACTION_TYPE,
+  SET_TARGET_ACTION_TYPE,
 } from './reducer';
 
 export const Translation = () => {
@@ -27,7 +27,7 @@ export const Translation = () => {
         corsUrl: 'http://cors-anywhere.herokuapp.com/',
       }),
     onSuccess: data => {
-      dispatch(setTranslatedText(data.text));
+      dispatch({ type: SET_TRANSLATED_TEXT_ACTION_TYPE, payload: data.text });
     },
   });
 
@@ -41,18 +41,21 @@ export const Translation = () => {
   }, [trimmedQuery, mutate]);
 
   const handleInputChange = event => {
-    dispatch(setQuery(event.currentTarget.value));
+    dispatch({ type: SET_QUERY_ACTION_TYPE, payload: event.currentTarget.value });
   };
 
   const handleLangsSwap = () => {
-    dispatch(swapLanguages());
+    dispatch({ type: SWAP_LANGUAGES_ACTION_TYPE });
   };
 
   return (
     <Container size="xl" mt="lg">
       <Grid>
         <Grid.Col span={5}>
-          <LangSelect value={state.source} onChange={value => dispatch(setSource(value))} />
+          <LangSelect
+            value={state.source}
+            onChange={value => dispatch({ type: SET_SOURCE_ACTION_TYPE, payload: value })}
+          />
           <Textarea
             placeholder="Text"
             className={styles.textarea}
@@ -81,7 +84,10 @@ export const Translation = () => {
         </Grid.Col>
 
         <Grid.Col span={5}>
-          <LangSelect value={state.target} onChange={value => dispatch(setTarget(value))} />
+          <LangSelect
+            value={state.target}
+            onChange={value => dispatch({ type: SET_TARGET_ACTION_TYPE, payload: value })}
+          />
           <Textarea
             placeholder="Translation"
             className={styles.textarea}
