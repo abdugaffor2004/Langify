@@ -1,27 +1,27 @@
-const SET_QUERY = 'SET_QUERY';
-const SET_TRANSLATED_TEXT = 'SET_TRANSLATED_TEXT';
-const SET_SOURCE = 'SET_SOURCE';
-const SET_TARGET = 'SET_TARGET';
-const SWAP_LANGUAGES = 'SWAP_LANGUAGES';
+const SET_QUERY_ACTION_TYPE = 'SET_QUERY_ACTION_TYPE';
+const SET_TRANSLATED_TEXT_ACTION_TYPE = 'SET_TRANSLATED_TEXT_ACTION_TYPE';
+const SET_SOURCE_ACTION_TYPE = 'SET_SOURCE_ACTION_TYPE';
+const SET_TARGET_ACTION_TYPE = 'SET_TARGET_ACTION_TYPE';
+const SWAP_LANGUAGES_ACTION_TYPE = 'SWAP_LANGUAGES_ACTION_TYPE';
 
-export const initialState = {
+export const INITIAL_TRANSLATION_STATE = {
   query: '',
   translatedText: '',
   source: 'en',
   target: 'ru',
 };
 
-export const reducer = (state = initialState, action) => {
+export const translationReducer = (state = INITIAL_TRANSLATION_STATE, action) => {
   switch (action.type) {
-    case SET_QUERY:
+    case SET_QUERY_ACTION_TYPE:
       return { ...state, query: action.payload };
-    case SET_TRANSLATED_TEXT:
+    case SET_TRANSLATED_TEXT_ACTION_TYPE:
       return { ...state, translatedText: action.payload };
-    case SET_SOURCE:
+    case SET_SOURCE_ACTION_TYPE:
       return { ...state, source: action.payload };
-    case SET_TARGET:
+    case SET_TARGET_ACTION_TYPE:
       return { ...state, target: action.payload };
-    case SWAP_LANGUAGES:
+    case SWAP_LANGUAGES_ACTION_TYPE:
       return {
         ...state,
         source: state.target,
@@ -34,11 +34,11 @@ export const reducer = (state = initialState, action) => {
   }
 };
 
-export const setQuery = query => ({ type: SET_QUERY, payload: query });
-export const setSource = source => ({ type: SET_SOURCE, payload: source });
-export const setTarget = target => ({ type: SET_TARGET, payload: target });
-export const swapLanguages = () => ({ type: SWAP_LANGUAGES });
+export const setQuery = query => ({ type: SET_QUERY_ACTION_TYPE, payload: query });
+export const setSource = source => ({ type: SET_SOURCE_ACTION_TYPE, payload: source });
+export const setTarget = target => ({ type: SET_TARGET_ACTION_TYPE, payload: target });
+export const swapLanguages = () => ({ type: SWAP_LANGUAGES_ACTION_TYPE });
 export const setTranslatedText = translatedText => ({
-  type: SET_TRANSLATED_TEXT,
+  type: SET_TRANSLATED_TEXT_ACTION_TYPE,
   payload: translatedText,
 });

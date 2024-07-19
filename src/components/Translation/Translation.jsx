@@ -6,8 +6,8 @@ import { LangSelect } from '../LangSelect';
 import { TbArrowsLeftRight } from 'react-icons/tb';
 import styles from './Translation.module.css';
 import {
-  initialState,
-  reducer,
+  INITIAL_TRANSLATION_STATE,
+  translationReducer,
   setQuery,
   setSource,
   setTarget,
@@ -16,7 +16,7 @@ import {
 } from './reducer';
 
 export const Translation = () => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(translationReducer, INITIAL_TRANSLATION_STATE);
   const trimmedQuery = state.query?.trim();
 
   const { mutate, isError, isPending, error } = useMutation({
@@ -44,7 +44,7 @@ export const Translation = () => {
     dispatch(setQuery(event.currentTarget.value));
   };
 
-  const swapLanguage = () => {
+  const handleLangsSwap = () => {
     dispatch(swapLanguages());
   };
 
@@ -66,7 +66,7 @@ export const Translation = () => {
         </Grid.Col>
 
         <Grid.Col className={styles.middleActions} span={2}>
-          <Button onClick={swapLanguage} className={styles.swapButton}>
+          <Button onClick={handleLangsSwap} className={styles.swapButton}>
             <TbArrowsLeftRight />
           </Button>
           <Button
