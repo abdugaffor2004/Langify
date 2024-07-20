@@ -44,14 +44,6 @@ export const Translation = () => {
     dispatch({ type: SET_QUERY_ACTION_TYPE, payload: event.currentTarget.value });
   };
 
-  const handleSelectChange = (newLang, opossiteLang, actionType) => {
-    if (newLang === opossiteLang) {
-      handleLangsSwap();
-    } else {
-      dispatch({ type: actionType, payload: newLang });
-    }
-  };
-
   const handleLangsSwap = () => {
     dispatch({ type: SWAP_LANGUAGES_ACTION_TYPE });
   };
@@ -62,7 +54,7 @@ export const Translation = () => {
         <Grid.Col span={5}>
           <LangSelect
             value={state.source}
-            onChange={value => handleSelectChange(value, state.target, SET_SOURCE_ACTION_TYPE)}
+            onChange={value => dispatch({ type: SET_SOURCE_ACTION_TYPE, payload: value })}
           />
           <Textarea
             placeholder="Text"
@@ -94,7 +86,7 @@ export const Translation = () => {
         <Grid.Col span={5}>
           <LangSelect
             value={state.target}
-            onChange={value => handleSelectChange(value, state.source, SET_TARGET_ACTION_TYPE)}
+            onChange={value => dispatch({ type: SET_TARGET_ACTION_TYPE, payload: value })}
           />
           <Textarea
             placeholder="Translation"
