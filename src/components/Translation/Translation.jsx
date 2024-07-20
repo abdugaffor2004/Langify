@@ -1,9 +1,9 @@
-import { Button, Container, Grid, Alert, Textarea } from '@mantine/core';
+import { Button, Container, Grid, Alert, Textarea, Tooltip } from '@mantine/core';
 import { useCallback, useReducer } from 'react';
 import { translate } from 'google-translate-api-browser';
 import { useMutation } from '@tanstack/react-query';
 import { LangSelect } from '../LangSelect';
-import { TbArrowsLeftRight } from 'react-icons/tb';
+import { TbArrowsLeftRight, TbLanguage } from 'react-icons/tb';
 import styles from './Translation.module.css';
 import {
   INITIAL_TRANSLATION_STATE,
@@ -49,8 +49,8 @@ export const Translation = () => {
   };
 
   return (
-    <Container size="xl" mt="lg">
-      <Grid>
+    <Container size="xl" className={styles.container}>
+      <Grid className={styles.gridContainer}>
         <Grid.Col span={5}>
           <LangSelect
             value={state.source}
@@ -62,25 +62,29 @@ export const Translation = () => {
             value={state.query}
             onChange={handleInputChange}
             autosize
-            variant="filled"
             size="lg"
             minRows={8}
           />
         </Grid.Col>
 
         <Grid.Col className={styles.middleActions} span={2}>
-          <Button onClick={handleLangsSwap} className={styles.swapButton}>
-            <TbArrowsLeftRight />
-          </Button>
-          <Button
-            onClick={handleTranslate}
-            size="md"
-            disabled={!trimmedQuery}
-            loading={isPending}
-            className={styles.translateButton}
-          >
-            {'Translate ->'}
-          </Button>
+          <Tooltip label="swap the languages" transitionProps={{ duration: 350 }} offset={10}>
+            <Button onClick={handleLangsSwap} className={styles.swapButton}>
+              <TbArrowsLeftRight size="20px" />
+            </Button>
+          </Tooltip>
+
+          <Tooltip label="Translate" offset={10}>
+            <Button
+              onClick={handleTranslate}
+              size="md"
+              disabled={!trimmedQuery}
+              loading={isPending}
+              className={styles.translateButton}
+            >
+              {<TbLanguage size="24px" />}
+            </Button>
+          </Tooltip>
         </Grid.Col>
 
         <Grid.Col span={5}>
@@ -93,7 +97,6 @@ export const Translation = () => {
             className={styles.textarea}
             value={state.translatedText}
             autosize
-            variant="filled"
             size="lg"
             minRows={8}
             readOnly
