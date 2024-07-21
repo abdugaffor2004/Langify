@@ -1,14 +1,33 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.gridContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 10rem;
+}
+
 .middleActions {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
 }
 
 .translateButton {
   transition: background-color 0.3s ease, color 0.3s ease, opacity 0.3s ease;
+  margin: 0 0 auto 0;
 }
 
-.textarea{
+.textarea {
   margin-top: 20px;
+}
+
+.swapButton {
+  margin-bottom: auto;
 }

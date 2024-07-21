@@ -5,6 +5,12 @@ const languageOptions = Object.entries(LANGUAGES).map(([key, value]) => ({
   value: key,
   label: value,
 }));
-export const LangSelect = ({ value, onChange }) => {
-  return <Select data={languageOptions} value={value} onChange={onChange} clearable={false} />;
-};
+export const LangSelect = ({ value, onChange }) => (
+  <Select
+    allowDeselect={false}
+    data={languageOptions}
+    value={value}
+    onChange={onChange}
+    clearable={false}
+  />
+);
