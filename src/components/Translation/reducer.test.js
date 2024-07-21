@@ -14,7 +14,7 @@ describe('translationReducer', () => {
     expect(translationReducer(INITIAL_TRANSLATION_STATE, {})).toEqual(INITIAL_TRANSLATION_STATE);
   });
 
-  it('should handle SET_QUERY_ACTION_TYPE', () => {
+  it('should handle set query action', () => {
     const action = { type: SET_QUERY_ACTION_TYPE, payload: 'Hello' };
     const expectedState = {
       ...INITIAL_TRANSLATION_STATE,
@@ -25,56 +25,28 @@ describe('translationReducer', () => {
     expect(translationReducer(INITIAL_TRANSLATION_STATE, action)).toEqual(expectedState);
   });
 
-  it('should handle SET_TRANSLATED_TEXT_ACTION_TYPE', () => {
+  it('should handle set translatedText action', () => {
     const action = { type: SET_TRANSLATED_TEXT_ACTION_TYPE, payload: 'Привет' };
     const expectedState = { ...INITIAL_TRANSLATION_STATE, translatedText: action.payload };
 
     expect(translationReducer(INITIAL_TRANSLATION_STATE, action)).toEqual(expectedState);
   });
 
-  it('should handle SET_SOURCE_ACTION_TYPE', () => {
+  it('should handle set source action', () => {
     const action = { type: SET_SOURCE_ACTION_TYPE, payload: 'en' };
     const expectedState = { ...INITIAL_TRANSLATION_STATE, source: action.payload };
 
     expect(translationReducer(INITIAL_TRANSLATION_STATE, action)).toEqual(expectedState);
   });
 
-  it('should handle SET_TARGET_ACTION_TYPE', () => {
+  it('should handle set target action', () => {
     const action = { type: SET_TARGET_ACTION_TYPE, payload: 'ru' };
     const expectedState = { ...INITIAL_TRANSLATION_STATE, target: action.payload };
 
     expect(translationReducer(INITIAL_TRANSLATION_STATE, action)).toEqual(expectedState);
   });
 
-  it('should handle SET_SWAP_ACTION_TYPE', () => {
-    const action = { type: SWAP_LANGUAGES_ACTION_TYPE };
-    const initialState = {
-      ...INITIAL_TRANSLATION_STATE,
-      source: 'en',
-      target: 'ru',
-      query: 'Hello',
-      translatedText: 'Привет',
-    };
-    const expectedState = {
-      ...INITIAL_TRANSLATION_STATE,
-      source: 'ru',
-      target: 'en',
-      query: 'Привет',
-      translatedText: 'Hello',
-    };
-
-    expect(translationReducer(initialState, action)).toEqual(expectedState);
-  });
-
-  it('should return initail state for unknown action type', () => {
-    const action = { type: 'UNKNOWN_ACTION_TYPE' };
-
-    expect(translationReducer(INITIAL_TRANSLATION_STATE, action)).toEqual(
-      INITIAL_TRANSLATION_STATE,
-    );
-  });
-
-  it('should swap languages and queries when SET_SOURCE_ACTION_TYPE is dispatched and new source equals target', () => {
+  it('should swap languages and queries when set source action is dispatched and new source equals target', () => {
     const action = { type: SET_SOURCE_ACTION_TYPE, payload: 'ru' };
     const initialState = {
       ...INITIAL_TRANSLATION_STATE,
@@ -94,7 +66,7 @@ describe('translationReducer', () => {
     expect(translationReducer(initialState, action)).toEqual(expectedState);
   });
 
-  it('should swap languages and queries when SET_TARGET_ACTION_TYPE is dispatched and new target equals source', () => {
+  it('should swap languages and queries when set target action is dispatched and new target equals source', () => {
     const action = { type: SET_TARGET_ACTION_TYPE, payload: 'en' };
     const initialState = {
       ...INITIAL_TRANSLATION_STATE,
@@ -114,8 +86,8 @@ describe('translationReducer', () => {
     expect(translationReducer(initialState, action)).toEqual(expectedState);
   });
 
-  it('should handle SET_SOURCE_ACTION_TYPE without swapping if new source doesnt equal target', () => {
-    const action = { type: SET_SOURCE_ACTION_TYPE, payload: 'es' };
+  it('should handle set swap action', () => {
+    const action = { type: SWAP_LANGUAGES_ACTION_TYPE };
     const initialState = {
       ...INITIAL_TRANSLATION_STATE,
       source: 'en',
@@ -125,30 +97,10 @@ describe('translationReducer', () => {
     };
     const expectedState = {
       ...INITIAL_TRANSLATION_STATE,
-      source: 'es',
-      target: 'ru',
-      query: 'Hello',
-      translatedText: 'Привет',
-    };
-
-    expect(translationReducer(initialState, action)).toEqual(expectedState);
-  });
-
-  it('should handle SET_TARGET_ACTION_TYPE without swapping if new target doesnt equal source', () => {
-    const action = { type: SET_TARGET_ACTION_TYPE, payload: 'es' };
-    const initialState = {
-      ...INITIAL_TRANSLATION_STATE,
-      source: 'en',
-      target: 'ru',
-      query: 'Hello',
-      translatedText: 'Привет',
-    };
-    const expectedState = {
-      ...INITIAL_TRANSLATION_STATE,
-      source: 'en',
-      target: 'es',
-      query: 'Hello',
-      translatedText: 'Привет',
+      source: 'ru',
+      target: 'en',
+      query: 'Привет',
+      translatedText: 'Hello',
     };
 
     expect(translationReducer(initialState, action)).toEqual(expectedState);
