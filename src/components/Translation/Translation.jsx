@@ -44,6 +44,14 @@ export const Translation = () => {
     dispatch({ type: SET_QUERY_ACTION_TYPE, payload: event.currentTarget.value });
   };
 
+  const handleSourceChange = value => {
+    dispatch({ type: SET_SOURCE_ACTION_TYPE, payload: value });
+  };
+
+  const handleTargetChange = value => {
+    dispatch({ type: SET_TARGET_ACTION_TYPE, payload: value });
+  };
+
   const handleLangsSwap = () => {
     dispatch({ type: SWAP_LANGUAGES_ACTION_TYPE });
   };
@@ -52,10 +60,7 @@ export const Translation = () => {
     <Container size="xl" className={styles.container}>
       <Grid className={styles.gridContainer}>
         <Grid.Col span={5}>
-          <LangSelect
-            value={state.source}
-            onChange={value => dispatch({ type: SET_SOURCE_ACTION_TYPE, payload: value })}
-          />
+          <LangSelect value={state.source} onChange={handleSourceChange} />
           <Textarea
             placeholder="Text"
             className={styles.textarea}
@@ -90,7 +95,7 @@ export const Translation = () => {
         <Grid.Col span={5}>
           <LangSelect
             value={state.target}
-            onChange={value => dispatch({ type: SET_TARGET_ACTION_TYPE, payload: value })}
+            onChange={handleTargetChange}
           />
           <Textarea
             placeholder="Translation"
