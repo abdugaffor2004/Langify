@@ -20,28 +20,28 @@ export const translationReducer = (state = INITIAL_TRANSLATION_STATE, action) =>
       return { ...state, translatedText: action.payload };
 
     case SET_SOURCE_ACTION_TYPE:
-      if (action.payload === state.target) {
-        return {
-          ...state,
-          source: state.target,
-          target: state.source,
-          query: state.translatedText,
-          translatedText: state.query,
-        };
+      if (action.payload !== state.target) {
+        return { ...state, source: action.payload };
       }
-      return { ...state, source: action.payload };
+      return {
+        ...state,
+        source: state.target,
+        target: state.source,
+        query: state.translatedText,
+        translatedText: state.query,
+      };
 
     case SET_TARGET_ACTION_TYPE:
-      if (action.payload === state.source) {
-        return {
-          ...state,
-          source: state.target,
-          target: state.source,
-          query: state.translatedText,
-          translatedText: state.query,
-        };
+      if (action.payload !== state.source) {
+        return { ...state, target: action.payload };
       }
-      return { ...state, target: action.payload };
+      return {
+        ...state,
+        source: state.target,
+        target: state.source,
+        query: state.translatedText,
+        translatedText: state.query,
+      };
 
     case SWAP_LANGUAGES_ACTION_TYPE:
       return {
