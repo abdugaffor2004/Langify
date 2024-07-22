@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   INITIAL_TRANSLATION_STATE,
+  SET_DETECTED_LANG_ACTION_TYPE,
   SET_QUERY_ACTION_TYPE,
   SET_SOURCE_ACTION_TYPE,
   SET_TARGET_ACTION_TYPE,
@@ -101,6 +102,70 @@ describe('translationReducer', () => {
       target: 'en',
       query: 'Привет',
       translatedText: 'Hello',
+    };
+
+    expect(translationReducer(initialState, action)).toEqual(expectedState);
+  });
+
+  it('should handle set detected lang action', () => {
+    const action = {
+      type: SET_DETECTED_LANG_ACTION_TYPE,
+      payload: { value: 'en', label: 'English' },
+    };
+    const expectedState = {
+      ...INITIAL_TRANSLATION_STATE,
+      detectedLang: { ...action.payload },
+      languages: {
+        ...INITIAL_TRANSLATION_STATE.languages,
+        auto: `Detect language (${action.payload.label})`,
+      },
+    };
+
+    expect(translationReducer(INITIAL_TRANSLATION_STATE, action)).toEqual(expectedState);
+  });
+
+  it('should handle set swap action with detected language', () => {
+    const action = { type: SWAP_LANGUAGES_ACTION_TYPE };
+
+    const initialState = {
+      ...INITIAL_TRANSLATION_STATE,
+      source: 'auto',
+      target: 'ru',
+      query: 'Halo',
+      translatedText: 'Привет',
+      detectedLang: { value: 'es', label: 'Spanish' },
+      languages: {
+        ...INITIAL_TRANSLATION_STATE.languages,
+        auto: `Detect language (Spanish)`,
+      },
+    };
+
+    const expectedState = {
+      ...initialState,
+      source: 'ru',
+      target: 'es',
+      query: 'Привет',
+      translatedText: 'Halo',
+    };
+
+    expect(translationReducer(initialState, action)).toEqual(expectedState);
+  });
+
+  it('should handle swap action when the detected language hasnt been chosen, set source action is dispatched and new source equals target ', () => {
+    const action = { type: SET_SOURCE_ACTION_TYPE, payload: 'ru' };
+
+    const initialState = {
+      ...INITIAL_TRANSLATION_STATE,
+      source: 'auto',
+      target: 'ru',
+      detectedLang: { value: '', label: '' },
+    };
+
+    const expectedState = {
+      ...INITIAL_TRANSLATION_STATE,
+      source: 'ru',
+      target: 'en',
+      detectedLang: { value: '', label: '' },
     };
 
     expect(translationReducer(initialState, action)).toEqual(expectedState);

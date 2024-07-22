@@ -10,7 +10,7 @@ export const INITIAL_TRANSLATION_STATE = {
   translatedText: '',
   source: 'auto',
   target: 'ru',
-  detectedLang: { value: '', label: '', default: 'en' },
+  detectedLang: { value: '', label: '' },
   languages: {
     auto: 'Detect language',
     en: 'English',
@@ -22,7 +22,7 @@ export const INITIAL_TRANSLATION_STATE = {
 const getNextLanguage = (currentLang, languages) => {
   const languageKeys = Object.keys(languages).filter(key => key !== 'auto');
   const currentIndex = languageKeys.indexOf(currentLang);
-  const nextIndex = (currentIndex + 1) % languageKeys.length;
+  const nextIndex = currentIndex === 0 ? languageKeys.length - 1 : currentIndex - 1;
   return { value: languageKeys[nextIndex], label: languages[languageKeys[nextIndex]] };
 };
 
@@ -81,7 +81,7 @@ export const translationReducer = (state = INITIAL_TRANSLATION_STATE, action) =>
         detectedLang: { ...state.detectedLang, ...action.payload },
         languages: {
           ...state.languages,
-          auto: `Detect language ${action.payload.label}`,
+          auto: `Detect language (${action.payload.label})`,
         },
       };
 

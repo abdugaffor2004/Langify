@@ -35,7 +35,7 @@ export const Translation = () => {
           type: SET_DETECTED_LANG_ACTION_TYPE,
           payload: {
             value: data.from.language.iso,
-            label: `(${ISO6391.getName(data.from.language.iso)})`,
+            label: ISO6391.getName(data.from.language.iso),
           },
         });
       }
