@@ -90,12 +90,16 @@ export const Translation = () => {
 
         <Grid.Col className={styles.middleActions} span={2}>
           <Tooltip label="swap the languages" transitionProps={{ duration: 350 }} offset={10}>
-            <Button onClick={handleLangsSwap} className={styles.swapButton}>
+            <Button
+              disabled={state.source === 'auto' && !state.detectedLang.label}
+              onClick={handleLangsSwap}
+              className={styles.swapButton}
+            >
               <TbArrowsLeftRight size="20px" />
             </Button>
           </Tooltip>
 
-          <Tooltip label="Translate" offset={10}>
+          <Tooltip label="Translate" transitionProps={{ duration: 350 }} offset={10}>
             <Button
               onClick={handleTranslate}
               size="md"

@@ -10,7 +10,7 @@ export const INITIAL_TRANSLATION_STATE = {
   translatedText: '',
   source: 'auto',
   target: 'ru',
-  detectedLang: { value: '', label: '' },
+  detectedLang: { value: '', label: '', default: 'en' },
   languages: {
     auto: 'Detect language',
     en: 'English',
@@ -18,6 +18,12 @@ export const INITIAL_TRANSLATION_STATE = {
     zh: 'Chinese',
     es: 'Spanish',
   },
+};
+const getNextLanguage = (currentLang, languages) => {
+  const languageKeys = Object.keys(languages).filter(key => key !== 'auto');
+  const currentIndex = languageKeys.indexOf(currentLang);
+  const nextIndex = (currentIndex + 1) % languageKeys.length;
+  return { value: languageKeys[nextIndex], label: languages[languageKeys[nextIndex]] };
 };
 
 export const translationReducer = (state = INITIAL_TRANSLATION_STATE, action) => {
@@ -29,7 +35,10 @@ export const translationReducer = (state = INITIAL_TRANSLATION_STATE, action) =>
       return { ...state, translatedText: action.payload };
 
     case SET_SOURCE_ACTION_TYPE: {
-      const sourceLang = state.source === 'auto' ? state.detectedLang.value : state.source;
+      const sourceLang =
+        state.source === 'auto'
+          ? state.detectedLang.value || getNextLanguage('ru', state.languages).value
+          : state.source;
       if (action.payload !== state.target) {
         return { ...state, source: action.payload };
       }
