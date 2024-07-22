@@ -1,16 +1,22 @@
 import { Select } from '@mantine/core';
-import { LANGUAGES } from '../../data/languages';
 
-const languageOptions = Object.entries(LANGUAGES).map(([key, value]) => ({
-  value: key,
-  label: value,
-}));
-export const LangSelect = ({ value, onChange }) => (
-  <Select
-    allowDeselect={false}
-    data={languageOptions}
-    value={value}
-    onChange={onChange}
-    clearable={false}
-  />
-);
+export const LangSelect = ({ value, onChange, isDetecting, languages }) => {
+  const languageOptions = Object.entries(languages).map(([key, value]) => ({
+    value: key,
+    label: value,
+  }));
+
+  const options = isDetecting
+    ? languageOptions
+    : languageOptions.filter(option => option.value !== 'auto');
+
+  return (
+    <Select
+      allowDeselect={false}
+      data={options}
+      value={value}
+      onChange={onChange}
+      clearable={false}
+    />
+  );
+};

@@ -5,6 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 import { LangSelect } from '../LangSelect';
 import { TbArrowsLeftRight, TbLanguage } from 'react-icons/tb';
 import styles from './Translation.module.css';
+import ISO6391 from 'iso-639-1';
 import {
   INITIAL_TRANSLATION_STATE,
   translationReducer,
@@ -13,6 +14,7 @@ import {
   SET_SOURCE_ACTION_TYPE,
   SWAP_LANGUAGES_ACTION_TYPE,
   SET_TARGET_ACTION_TYPE,
+  SET_DETECTED_LANG_ACTION_TYPE,
 } from './reducer';
 
 export const Translation = () => {
@@ -28,6 +30,15 @@ export const Translation = () => {
       }),
     onSuccess: data => {
       dispatch({ type: SET_TRANSLATED_TEXT_ACTION_TYPE, payload: data.text });
+      if (state.source === 'auto' && data.from.language.iso) {
+        dispatch({
+          type: SET_DETECTED_LANG_ACTION_TYPE,
+          payload: {
+            value: data.from.language.iso,
+            label: `(${ISO6391.getName(data.from.language.iso)})`,
+          },
+        });
+      }
     },
   });
 
@@ -60,7 +71,12 @@ export const Translation = () => {
     <Container size="xl" className={styles.container}>
       <Grid className={styles.gridContainer}>
         <Grid.Col span={5}>
-          <LangSelect value={state.source} onChange={handleSourceChange} />
+          <LangSelect
+            languages={state.languages}
+            isDetecting={true}
+            value={state.source}
+            onChange={handleSourceChange}
+          />
           <Textarea
             placeholder="Text"
             className={styles.textarea}
@@ -94,6 +110,7 @@ export const Translation = () => {
 
         <Grid.Col span={5}>
           <LangSelect
+            languages={state.languages}
             value={state.target}
             onChange={handleTargetChange}
           />
