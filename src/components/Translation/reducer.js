@@ -1,3 +1,5 @@
+import { getNextLanguage } from '../../helpers';
+
 export const SET_QUERY_ACTION_TYPE = 'SET_QUERY_ACTION_TYPE';
 export const SET_TRANSLATED_TEXT_ACTION_TYPE = 'SET_TRANSLATED_TEXT_ACTION_TYPE';
 export const SET_SOURCE_ACTION_TYPE = 'SET_SOURCE_ACTION_TYPE';
@@ -9,21 +11,8 @@ export const INITIAL_TRANSLATION_STATE = {
   query: '',
   translatedText: '',
   source: 'auto',
+  detectedSource: '',
   target: 'ru',
-  detectedLang: { value: '', label: '' },
-  languages: {
-    auto: 'Detect language',
-    en: 'English',
-    ru: 'Russian',
-    zh: 'Chinese',
-    es: 'Spanish',
-  },
-};
-const getNextLanguage = (currentLang, languages) => {
-  const languageKeys = Object.keys(languages).filter(key => key !== 'auto');
-  const currentIndex = languageKeys.indexOf(currentLang);
-  const nextIndex = currentIndex === 0 ? languageKeys.length - 1 : currentIndex - 1;
-  return { value: languageKeys[nextIndex], label: languages[languageKeys[nextIndex]] };
 };
 
 export const translationReducer = (state = INITIAL_TRANSLATION_STATE, action) => {
@@ -35,10 +24,7 @@ export const translationReducer = (state = INITIAL_TRANSLATION_STATE, action) =>
       return { ...state, translatedText: action.payload };
 
     case SET_SOURCE_ACTION_TYPE: {
-      const sourceLang =
-        state.source === 'auto'
-          ? state.detectedLang.value || getNextLanguage('ru', state.languages).value
-          : state.source;
+      const sourceLang = state.source === 'auto' ? getNextLanguage('ru') : state.source;
       if (action.payload !== state.target) {
         return { ...state, source: action.payload };
       }
@@ -65,7 +51,7 @@ export const translationReducer = (state = INITIAL_TRANSLATION_STATE, action) =>
     }
 
     case SWAP_LANGUAGES_ACTION_TYPE: {
-      const sourceLang = state.source === 'auto' ? state.detectedLang.value : state.source;
+      const sourceLang = state.source === 'auto' ? state.detectedSource : state.source;
       return {
         ...state,
         source: state.target,
@@ -78,11 +64,7 @@ export const translationReducer = (state = INITIAL_TRANSLATION_STATE, action) =>
     case SET_DETECTED_LANG_ACTION_TYPE:
       return {
         ...state,
-        detectedLang: { ...state.detectedLang, ...action.payload },
-        languages: {
-          ...state.languages,
-          auto: `Detect language (${action.payload.label})`,
-        },
+        detectedSource: action.payload,
       };
 
     default:

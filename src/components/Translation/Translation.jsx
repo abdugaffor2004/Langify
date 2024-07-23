@@ -5,7 +5,6 @@ import { useMutation } from '@tanstack/react-query';
 import { LangSelect } from '../LangSelect';
 import { TbArrowsLeftRight, TbLanguage } from 'react-icons/tb';
 import styles from './Translation.module.css';
-import ISO6391 from 'iso-639-1';
 import {
   INITIAL_TRANSLATION_STATE,
   translationReducer,
@@ -33,10 +32,7 @@ export const Translation = () => {
       if (state.source === 'auto' && data.from.language.iso) {
         dispatch({
           type: SET_DETECTED_LANG_ACTION_TYPE,
-          payload: {
-            value: data.from.language.iso,
-            label: ISO6391.getName(data.from.language.iso),
-          },
+          payload: data.from.language.iso,
         });
       }
     },
@@ -72,8 +68,8 @@ export const Translation = () => {
       <Grid className={styles.gridContainer}>
         <Grid.Col span={5}>
           <LangSelect
-            languages={state.languages}
-            isDetecting={true}
+            detectedSource={state.detectedSource}
+            withAuto={true}
             value={state.source}
             onChange={handleSourceChange}
           />
@@ -91,7 +87,7 @@ export const Translation = () => {
         <Grid.Col className={styles.middleActions} span={2}>
           <Tooltip label="swap the languages" transitionProps={{ duration: 350 }} offset={10}>
             <Button
-              disabled={state.source === 'auto' && !state.detectedLang.label}
+              disabled={state.source === 'auto' && !state.detectedSource}
               onClick={handleLangsSwap}
               className={styles.swapButton}
             >
@@ -113,11 +109,7 @@ export const Translation = () => {
         </Grid.Col>
 
         <Grid.Col span={5}>
-          <LangSelect
-            languages={state.languages}
-            value={state.target}
-            onChange={handleTargetChange}
-          />
+          <LangSelect value={state.target} onChange={handleTargetChange} />
           <Textarea
             placeholder="Translation"
             className={styles.textarea}

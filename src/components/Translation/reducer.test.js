@@ -110,15 +110,11 @@ describe('translationReducer', () => {
   it('should handle set detected lang action', () => {
     const action = {
       type: SET_DETECTED_LANG_ACTION_TYPE,
-      payload: { value: 'en', label: 'English' },
+      payload: 'en',
     };
     const expectedState = {
       ...INITIAL_TRANSLATION_STATE,
-      detectedLang: { ...action.payload },
-      languages: {
-        ...INITIAL_TRANSLATION_STATE.languages,
-        auto: `Detect language (${action.payload.label})`,
-      },
+      detectedSource: action.payload,
     };
 
     expect(translationReducer(INITIAL_TRANSLATION_STATE, action)).toEqual(expectedState);
@@ -133,11 +129,7 @@ describe('translationReducer', () => {
       target: 'ru',
       query: 'Halo',
       translatedText: 'Привет',
-      detectedLang: { value: 'es', label: 'Spanish' },
-      languages: {
-        ...INITIAL_TRANSLATION_STATE.languages,
-        auto: `Detect language (Spanish)`,
-      },
+      detectedSource: 'es',
     };
 
     const expectedState = {
@@ -158,14 +150,14 @@ describe('translationReducer', () => {
       ...INITIAL_TRANSLATION_STATE,
       source: 'auto',
       target: 'ru',
-      detectedLang: { value: '', label: '' },
+      detectedSource: '',
     };
 
     const expectedState = {
       ...INITIAL_TRANSLATION_STATE,
       source: 'ru',
       target: 'en',
-      detectedLang: { value: '', label: '' },
+      detectedSource: '',
     };
 
     expect(translationReducer(initialState, action)).toEqual(expectedState);
