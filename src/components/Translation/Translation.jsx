@@ -8,12 +8,11 @@ import styles from './Translation.module.css';
 import {
   INITIAL_TRANSLATION_STATE,
   translationReducer,
-  SET_TRANSLATED_TEXT_ACTION_TYPE,
   SET_QUERY_ACTION_TYPE,
   SET_SOURCE_ACTION_TYPE,
   SWAP_LANGUAGES_ACTION_TYPE,
   SET_TARGET_ACTION_TYPE,
-  SET_DETECTED_LANG_ACTION_TYPE,
+  TRANSLATE_ACTION_TYPE,
 } from './reducer';
 
 export const Translation = () => {
@@ -28,13 +27,16 @@ export const Translation = () => {
         corsUrl: 'http://cors-anywhere.herokuapp.com/',
       }),
     onSuccess: data => {
-      dispatch({ type: SET_TRANSLATED_TEXT_ACTION_TYPE, payload: data.text });
-      if (state.source === 'auto' && data.from.language.iso) {
-        dispatch({
-          type: SET_DETECTED_LANG_ACTION_TYPE,
-          payload: data.from.language.iso,
-        });
-      }
+      dispatch({
+        type: TRANSLATE_ACTION_TYPE,
+        payload: {
+          text: data.text,
+          language:
+            state.source === 'auto' && data.from.language.iso
+              ? data.from.language.iso
+              : state.detectedSource,
+        },
+      });
     },
   });
 
@@ -68,7 +70,7 @@ export const Translation = () => {
       <Grid className={styles.gridContainer}>
         <Grid.Col span={5}>
           <LangSelect
-            detectedSource={state.detectedSource}
+            detectedLang={state.detectedSource}
             withAuto={true}
             value={state.source}
             onChange={handleSourceChange}

@@ -7,9 +7,9 @@ const languageOptions = Object.entries(LANGUAGES).map(([key, value]) => ({
   label: value,
 }));
 
-export const LangSelect = ({ value, onChange, withAuto, detectedSource }) => {
-  const autoLabel = detectedSource
-    ? `Detected (${ISO6391.getName(detectedSource)})`
+export const LangSelect = ({ value, onChange, withAuto, detectedLang }) => {
+  const autoLabel = detectedLang
+    ? `Detected (${ISO6391.getName(detectedLang)})`
     : 'Detect language';
 
   const options = withAuto

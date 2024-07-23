@@ -1,12 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import {
   INITIAL_TRANSLATION_STATE,
-  SET_DETECTED_LANG_ACTION_TYPE,
   SET_QUERY_ACTION_TYPE,
   SET_SOURCE_ACTION_TYPE,
   SET_TARGET_ACTION_TYPE,
-  SET_TRANSLATED_TEXT_ACTION_TYPE,
   SWAP_LANGUAGES_ACTION_TYPE,
+  TRANSLATE_ACTION_TYPE,
   translationReducer,
 } from './reducer';
 
@@ -26,9 +25,29 @@ describe('translationReducer', () => {
     expect(translationReducer(INITIAL_TRANSLATION_STATE, action)).toEqual(expectedState);
   });
 
-  it('should handle set translatedText action', () => {
-    const action = { type: SET_TRANSLATED_TEXT_ACTION_TYPE, payload: 'Привет' };
-    const expectedState = { ...INITIAL_TRANSLATION_STATE, translatedText: action.payload };
+  it('should handle translate action when source !== auto ', () => {
+    const action = {
+      type: TRANSLATE_ACTION_TYPE,
+      payload: { text: 'Привет', language: INITIAL_TRANSLATION_STATE.detectedSource },
+    };
+    const expectedState = {
+      ...INITIAL_TRANSLATION_STATE,
+      translatedText: action.payload.text,
+    };
+
+    expect(translationReducer(INITIAL_TRANSLATION_STATE, action)).toEqual(expectedState);
+  });
+
+  it('should handle translate action when source === auto ', () => {
+    const action = {
+      type: TRANSLATE_ACTION_TYPE,
+      payload: { text: 'Привет', language: 'en' },
+    };
+    const expectedState = {
+      ...INITIAL_TRANSLATION_STATE,
+      translatedText: action.payload.text,
+      detectedSource: action.payload.language,
+    };
 
     expect(translationReducer(INITIAL_TRANSLATION_STATE, action)).toEqual(expectedState);
   });
@@ -105,19 +124,6 @@ describe('translationReducer', () => {
     };
 
     expect(translationReducer(initialState, action)).toEqual(expectedState);
-  });
-
-  it('should handle set detected lang action', () => {
-    const action = {
-      type: SET_DETECTED_LANG_ACTION_TYPE,
-      payload: 'en',
-    };
-    const expectedState = {
-      ...INITIAL_TRANSLATION_STATE,
-      detectedSource: action.payload,
-    };
-
-    expect(translationReducer(INITIAL_TRANSLATION_STATE, action)).toEqual(expectedState);
   });
 
   it('should handle set swap action with detected language', () => {
