@@ -31,10 +31,7 @@ export const Translation = () => {
         type: TRANSLATE_ACTION_TYPE,
         payload: {
           text: data.text,
-          language:
-            state.source === 'auto' && data.from.language.iso
-              ? data.from.language.iso
-              : state.detectedSource,
+          language: data.from.language.iso,
         },
       });
     },
@@ -71,7 +68,7 @@ export const Translation = () => {
         <Grid.Col span={5}>
           <LangSelect
             detectedLang={state.detectedSource}
-            withAuto={true}
+            withAuto
             value={state.source}
             onChange={handleSourceChange}
           />

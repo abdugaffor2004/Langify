@@ -24,7 +24,10 @@ export const translationReducer = (state = INITIAL_TRANSLATION_STATE, action) =>
       return {
         ...state,
         translatedText: action.payload.text,
-        detectedSource: action.payload.language,
+        detectedSource:
+          state.source === 'auto' && action.payload.language
+            ? action.payload.language
+            : state.detectedSource,
       };
 
     case SET_SOURCE_ACTION_TYPE: {
