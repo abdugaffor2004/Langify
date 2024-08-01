@@ -72,14 +72,6 @@ export const Translation = () => {
     dispatch({ type: SWAP_LANGUAGES_ACTION_TYPE });
   };
 
-  const handleCopy = () => {
-    try {
-      clipboard.copy(state.translatedText);
-    } catch (err) {
-      throw new Error('Failed to copy text: ', err);
-    }
-  };
-
   return (
     <Container size="xl" className={styles.container}>
       <Grid className={styles.gridContainer}>
@@ -149,7 +141,7 @@ export const Translation = () => {
                 color={clipboard.copied ? 'teal' : 'blue'}
                 size="32px"
                 variant="subtle"
-                onClick={handleCopy}
+                onClick={() => clipboard.copy(state.translatedText)}
               >
                 {clipboard.copied ? <TbCopyCheckFilled size="24px" /> : <TbCopy size="24px" />}
               </ActionIcon>
@@ -165,6 +157,18 @@ export const Translation = () => {
               color="red"
             >
               {error?.message}
+            </Notification>
+          )}
+
+          {clipboard.error && (
+            <Notification
+              mt="md"
+              withBorder
+              withCloseButton={false}
+              title={clipboard.error?.name}
+              color="red"
+            >
+              {clipboard.error?.message}
             </Notification>
           )}
         </Grid.Col>
