@@ -1,12 +1,4 @@
-import {
-  Button,
-  Container,
-  Grid,
-  Textarea,
-  Tooltip,
-  ActionIcon,
-  Notification,
-} from '@mantine/core';
+import { Button, Container, Grid, Textarea, Tooltip, ActionIcon } from '@mantine/core';
 import { useCallback, useReducer } from 'react';
 import { translate } from 'google-translate-api-browser';
 import { useMutation } from '@tanstack/react-query';
@@ -23,6 +15,7 @@ import {
   TRANSLATE_ACTION_TYPE,
 } from './reducer';
 import { useClipboard } from '@mantine/hooks';
+import { ErrorAlert } from './ErrorAlert';
 
 export const Translation = () => {
   const [state, dispatch] = useReducer(translationReducer, INITIAL_TRANSLATION_STATE);
@@ -148,29 +141,7 @@ export const Translation = () => {
             </Tooltip>
           </div>
 
-          {isError && (
-            <Notification
-              mt="md"
-              withBorder
-              withCloseButton={false}
-              title={error?.name}
-              color="red"
-            >
-              {error?.message}
-            </Notification>
-          )}
-
-          {clipboard.error && (
-            <Notification
-              mt="md"
-              withBorder
-              withCloseButton={false}
-              title={clipboard.error?.name}
-              color="red"
-            >
-              {clipboard.error?.message}
-            </Notification>
-          )}
+          <ErrorAlert error={isError ? error : clipboard.error} />
         </Grid.Col>
       </Grid>
     </Container>
