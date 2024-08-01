@@ -141,7 +141,8 @@ export const Translation = () => {
             </Tooltip>
           </div>
 
-          <ErrorAlert error={isError ? error : clipboard.error} />
+          {isError && <ErrorAlert error={error} />}
+          {clipboard.error && <ErrorAlert error={clipboard.error} />}
         </Grid.Col>
       </Grid>
     </Container>
