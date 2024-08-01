@@ -24,8 +24,20 @@
   margin: 0 0 auto 0;
 }
 
+.translationContainer {
+  position: relative;
+}
+
 .textarea {
   margin-top: 20px;
+}
+
+.copyButton {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: 20px;
+  background: none;
 }
 
 .swapButton {
