@@ -1,5 +1,3 @@
-import { getNextLanguage } from '../../helpers';
-
 export const SET_QUERY_ACTION_TYPE = 'SET_QUERY_ACTION_TYPE';
 export const TRANSLATE_ACTION_TYPE = 'SET_TRANSLATED_TEXT_ACTION_TYPE';
 export const SET_SOURCE_ACTION_TYPE = 'SET_SOURCE_ACTION_TYPE';
@@ -31,10 +29,11 @@ export const translationReducer = (state = INITIAL_TRANSLATION_STATE, action) =>
       };
 
     case SET_SOURCE_ACTION_TYPE: {
-      const sourceLang = state.source === 'auto' ? getNextLanguage('ru') : state.source;
       if (action.payload !== state.target) {
         return { ...state, source: action.payload };
       }
+
+      const sourceLang = state.source === 'auto' ? 'en' : state.source;
       return {
         ...state,
         source: state.target,
