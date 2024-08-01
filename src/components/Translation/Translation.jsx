@@ -8,11 +8,11 @@ import styles from './Translation.module.css';
 import {
   INITIAL_TRANSLATION_STATE,
   translationReducer,
-  SET_TRANSLATED_TEXT_ACTION_TYPE,
   SET_QUERY_ACTION_TYPE,
   SET_SOURCE_ACTION_TYPE,
   SWAP_LANGUAGES_ACTION_TYPE,
   SET_TARGET_ACTION_TYPE,
+  TRANSLATE_ACTION_TYPE,
 } from './reducer';
 
 export const Translation = () => {
@@ -27,7 +27,13 @@ export const Translation = () => {
         corsUrl: 'http://cors-anywhere.herokuapp.com/',
       }),
     onSuccess: data => {
-      dispatch({ type: SET_TRANSLATED_TEXT_ACTION_TYPE, payload: data.text });
+      dispatch({
+        type: TRANSLATE_ACTION_TYPE,
+        payload: {
+          text: data.text,
+          language: data.from.language.iso,
+        },
+      });
     },
   });
 
@@ -60,7 +66,12 @@ export const Translation = () => {
     <Container size="xl" className={styles.container}>
       <Grid className={styles.gridContainer}>
         <Grid.Col span={5}>
-          <LangSelect value={state.source} onChange={handleSourceChange} />
+          <LangSelect
+            detectedLang={state.detectedSource}
+            withAuto
+            value={state.source}
+            onChange={handleSourceChange}
+          />
           <Textarea
             placeholder="Text"
             className={styles.textarea}
@@ -74,12 +85,16 @@ export const Translation = () => {
 
         <Grid.Col className={styles.middleActions} span={2}>
           <Tooltip label="swap the languages" transitionProps={{ duration: 350 }} offset={10}>
-            <Button onClick={handleLangsSwap} className={styles.swapButton}>
+            <Button
+              disabled={state.source === 'auto' && !state.detectedSource}
+              onClick={handleLangsSwap}
+              className={styles.swapButton}
+            >
               <TbArrowsLeftRight size="20px" />
             </Button>
           </Tooltip>
 
-          <Tooltip label="Translate" offset={10}>
+          <Tooltip label="Translate" transitionProps={{ duration: 350 }} offset={10}>
             <Button
               onClick={handleTranslate}
               size="md"
@@ -93,10 +108,7 @@ export const Translation = () => {
         </Grid.Col>
 
         <Grid.Col span={5}>
-          <LangSelect
-            value={state.target}
-            onChange={handleTargetChange}
-          />
+          <LangSelect value={state.target} onChange={handleTargetChange} />
           <Textarea
             placeholder="Translation"
             className={styles.textarea}
