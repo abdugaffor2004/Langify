@@ -1,5 +1,5 @@
 import { Button, Container, Grid, Textarea, Tooltip, ActionIcon } from '@mantine/core';
-import { useCallback, useReducer } from 'react';
+import { useCallback, useEffect, useReducer } from 'react';
 import { translate } from 'google-translate-api-browser';
 import { useMutation } from '@tanstack/react-query';
 import { LangSelect } from '../LangSelect';
@@ -18,9 +18,24 @@ import { useClipboard } from '@mantine/hooks';
 import { ErrorAlert } from './ErrorAlert';
 
 export const Translation = () => {
-  const [state, dispatch] = useReducer(translationReducer, INITIAL_TRANSLATION_STATE);
+  const [state, dispatch] = useReducer(translationReducer, {
+    ...INITIAL_TRANSLATION_STATE,
+    ...JSON.parse(sessionStorage.getItem('translationLang')),
+  });
+
   const trimmedQuery = state.query?.trim();
   const clipboard = useClipboard({ timeout: 1200 });
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(
+        'translationLang',
+        JSON.stringify({ source: state.source, target: state.target }),
+      );
+    } catch (error) {
+      throw new Error(`Failed to save to sessionStorage: ${error}`);
+    }
+  }, [state]);
 
   const { mutate, isError, isPending, error } = useMutation({
     mutationFn: () =>
