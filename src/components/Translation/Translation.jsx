@@ -1,5 +1,5 @@
 import { Button, Container, Grid, Textarea, Tooltip, ActionIcon } from '@mantine/core';
-import { useCallback, useReducer } from 'react';
+import { useCallback, useEffect, useReducer } from 'react';
 import { translate } from 'google-translate-api-browser';
 import { useMutation } from '@tanstack/react-query';
 import { LangSelect } from '../LangSelect';
@@ -13,14 +13,26 @@ import {
   SWAP_LANGUAGES_ACTION_TYPE,
   SET_TARGET_ACTION_TYPE,
   TRANSLATE_ACTION_TYPE,
+  INIT_ACTION_TYPE,
 } from './reducer';
 import { useClipboard } from '@mantine/hooks';
 import { ErrorAlert } from './ErrorAlert';
 
 export const Translation = () => {
-  const [state, dispatch] = useReducer(translationReducer, INITIAL_TRANSLATION_STATE);
+  const [state, dispatch] = useReducer(translationReducer, {
+    ...INITIAL_TRANSLATION_STATE,
+    ...JSON.parse(sessionStorage.getItem('translationState')),
+  });
+
   const trimmedQuery = state.query?.trim();
   const clipboard = useClipboard({ timeout: 1200 });
+
+  useEffect(() => {
+    const savedState = sessionStorage.getItem('translationState');
+    if (savedState) {
+      dispatch({ type: INIT_ACTION_TYPE, payload: JSON.parse(savedState) });
+    }
+  }, []);
 
   const { mutate, isError, isPending, error } = useMutation({
     mutationFn: () =>

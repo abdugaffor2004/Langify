@@ -13,22 +13,20 @@ const saveLanguagesToSessionStorage = state => {
   );
 };
 
-const savedState = sessionStorage.getItem('translationState')
-  ? JSON.parse(sessionStorage.getItem('translationState'))
-  : null;
-
 export const INITIAL_TRANSLATION_STATE = {
   query: '',
   translatedText: '',
   source: 'auto',
   detectedSource: '',
   target: 'ru',
-  ...savedState,
 };
 
 export const translationReducer = (state = INITIAL_TRANSLATION_STATE, action) => {
   let newState;
   switch (action.type) {
+    case INIT_ACTION_TYPE:
+      return { ...state, ...action.payload };
+
     case SET_QUERY_ACTION_TYPE:
       return { ...state, query: action.payload };
 

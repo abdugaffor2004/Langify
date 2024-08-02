@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import {
+  INIT_ACTION_TYPE,
   INITIAL_TRANSLATION_STATE,
   SET_QUERY_ACTION_TYPE,
   SET_SOURCE_ACTION_TYPE,
@@ -9,9 +10,37 @@ import {
   translationReducer,
 } from './reducer';
 
+const mockSessionStorage = {
+  store: {},
+  getItem(key) {
+    return this.store[key] || null;
+  },
+  setItem(key, value) {
+    this.store[key] = value;
+  },
+  clear() {
+    this.store = {};
+  },
+};
+globalThis.sessionStorage = mockSessionStorage;
+
 describe('translationReducer', () => {
+  beforeEach(() => {
+    sessionStorage.clear();
+  });
+
   it('should return initial state', () => {
     expect(translationReducer(INITIAL_TRANSLATION_STATE, {})).toEqual(INITIAL_TRANSLATION_STATE);
+  });
+
+  it('should initialize state from sessionStorage', () => {
+    sessionStorage.setItem('translationState', { source: 'en', target: 'ru' });
+    const action = { type: INIT_ACTION_TYPE, payload: sessionStorage.getItem('translationState') };
+
+    expect(translationReducer(undefined, action)).toEqual({
+      ...INITIAL_TRANSLATION_STATE,
+      ...action.payload,
+    });
   });
 
   it('should handle set query action', () => {
@@ -57,13 +86,21 @@ describe('translationReducer', () => {
     const expectedState = { ...INITIAL_TRANSLATION_STATE, source: action.payload };
 
     expect(translationReducer(INITIAL_TRANSLATION_STATE, action)).toEqual(expectedState);
+    expect(JSON.parse(sessionStorage.getItem('translationState'))).toEqual({
+      source: expectedState.source,
+      target: expectedState.target,
+    });
   });
 
   it('should handle set target action', () => {
-    const action = { type: SET_TARGET_ACTION_TYPE, payload: 'ru' };
+    const action = { type: SET_TARGET_ACTION_TYPE, payload: 'zh' };
     const expectedState = { ...INITIAL_TRANSLATION_STATE, target: action.payload };
 
     expect(translationReducer(INITIAL_TRANSLATION_STATE, action)).toEqual(expectedState);
+    expect(JSON.parse(sessionStorage.getItem('translationState'))).toEqual({
+      source: expectedState.source,
+      target: expectedState.target,
+    });
   });
 
   it('should swap languages and queries when set source action is dispatched and new source equals target', () => {
@@ -84,6 +121,10 @@ describe('translationReducer', () => {
     };
 
     expect(translationReducer(initialState, action)).toEqual(expectedState);
+    expect(JSON.parse(sessionStorage.getItem('translationState'))).toEqual({
+      source: expectedState.source,
+      target: expectedState.target,
+    });
   });
 
   it('should swap languages and queries when set target action is dispatched and new target equals source', () => {
@@ -104,6 +145,10 @@ describe('translationReducer', () => {
     };
 
     expect(translationReducer(initialState, action)).toEqual(expectedState);
+    expect(JSON.parse(sessionStorage.getItem('translationState'))).toEqual({
+      source: expectedState.source,
+      target: expectedState.target,
+    });
   });
 
   it('should handle set swap action', () => {
@@ -124,6 +169,10 @@ describe('translationReducer', () => {
     };
 
     expect(translationReducer(initialState, action)).toEqual(expectedState);
+    expect(JSON.parse(sessionStorage.getItem('translationState'))).toEqual({
+      source: expectedState.source,
+      target: expectedState.target,
+    });
   });
 
   it('should handle set swap action with detected language', () => {
@@ -147,6 +196,10 @@ describe('translationReducer', () => {
     };
 
     expect(translationReducer(initialState, action)).toEqual(expectedState);
+    expect(JSON.parse(sessionStorage.getItem('translationState'))).toEqual({
+      source: expectedState.source,
+      target: expectedState.target,
+    });
   });
 
   it('should handle swap action when the detected language hasnt been chosen, set source action is dispatched and new source equals target ', () => {
@@ -167,5 +220,9 @@ describe('translationReducer', () => {
     };
 
     expect(translationReducer(initialState, action)).toEqual(expectedState);
+    expect(JSON.parse(sessionStorage.getItem('translationState'))).toEqual({
+      source: expectedState.source,
+      target: expectedState.target,
+    });
   });
 });
