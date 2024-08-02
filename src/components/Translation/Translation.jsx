@@ -1,9 +1,9 @@
-import { Button, Container, Grid, Alert, Textarea, Tooltip } from '@mantine/core';
+import { Button, Container, Grid, Textarea, Tooltip, ActionIcon } from '@mantine/core';
 import { useCallback, useReducer } from 'react';
 import { translate } from 'google-translate-api-browser';
 import { useMutation } from '@tanstack/react-query';
 import { LangSelect } from '../LangSelect';
-import { TbArrowsLeftRight, TbLanguage } from 'react-icons/tb';
+import { TbArrowsLeftRight, TbCopy, TbCopyCheckFilled, TbLanguage } from 'react-icons/tb';
 import styles from './Translation.module.css';
 import {
   INITIAL_TRANSLATION_STATE,
@@ -14,10 +14,13 @@ import {
   SET_TARGET_ACTION_TYPE,
   TRANSLATE_ACTION_TYPE,
 } from './reducer';
+import { useClipboard } from '@mantine/hooks';
+import { ErrorAlert } from './ErrorAlert';
 
 export const Translation = () => {
   const [state, dispatch] = useReducer(translationReducer, INITIAL_TRANSLATION_STATE);
   const trimmedQuery = state.query?.trim();
+  const clipboard = useClipboard({ timeout: 1200 });
 
   const { mutate, isError, isPending, error } = useMutation({
     mutationFn: () =>
@@ -109,21 +112,37 @@ export const Translation = () => {
 
         <Grid.Col span={5}>
           <LangSelect value={state.target} onChange={handleTargetChange} />
-          <Textarea
-            placeholder="Translation"
-            className={styles.textarea}
-            value={state.translatedText}
-            autosize
-            size="lg"
-            minRows={8}
-            readOnly
-          />
+          <div className={styles.translationContainer}>
+            <Textarea
+              placeholder="Translation"
+              className={styles.textarea}
+              value={state.translatedText}
+              autosize
+              size="lg"
+              minRows={8}
+              readOnly
+            />
 
-          {isError && (
-            <Alert title="Error" color="red">
-              {error?.message}
-            </Alert>
-          )}
+            <Tooltip
+              disabled={!state.translatedText}
+              label={clipboard.copied ? 'Copied' : 'Copy'}
+              position="right"
+            >
+              <ActionIcon
+                className={styles.copyButton}
+                disabled={!state.translatedText}
+                color={clipboard.copied ? 'teal' : 'blue'}
+                size="32px"
+                variant="subtle"
+                onClick={() => clipboard.copy(state.translatedText)}
+              >
+                {clipboard.copied ? <TbCopyCheckFilled size="24px" /> : <TbCopy size="24px" />}
+              </ActionIcon>
+            </Tooltip>
+          </div>
+
+          {isError && <ErrorAlert error={error} />}
+          {clipboard.error && <ErrorAlert error={clipboard.error} />}
         </Grid.Col>
       </Grid>
     </Container>
