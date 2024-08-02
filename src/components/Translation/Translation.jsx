@@ -16,25 +16,20 @@ import {
 } from './reducer';
 import { useClipboard } from '@mantine/hooks';
 import { ErrorAlert } from './ErrorAlert';
+import { writeSessionStorageValue } from '../../helpers/WriteSessionStorage';
+import { readSessionStorageValue } from '../../helpers/ReadSessionStorage';
 
 export const Translation = () => {
   const [state, dispatch] = useReducer(translationReducer, {
     ...INITIAL_TRANSLATION_STATE,
-    ...JSON.parse(sessionStorage.getItem('translationLang')),
+    ...readSessionStorageValue('translationLang'),
   });
 
   const trimmedQuery = state.query?.trim();
   const clipboard = useClipboard({ timeout: 1200 });
 
   useEffect(() => {
-    try {
-      sessionStorage.setItem(
-        'translationLang',
-        JSON.stringify({ source: state.source, target: state.target }),
-      );
-    } catch (error) {
-      throw new Error(`Failed to save to sessionStorage: ${error}`);
-    }
+    writeSessionStorageValue('translationLang', { source: state.source, target: state.target });
   }, [state]);
 
   const { mutate, isError, isPending, error } = useMutation({
