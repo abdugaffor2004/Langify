@@ -4,18 +4,6 @@ export const SET_SOURCE_ACTION_TYPE = 'SET_SOURCE_ACTION_TYPE';
 export const SET_TARGET_ACTION_TYPE = 'SET_TARGET_ACTION_TYPE';
 export const SWAP_LANGUAGES_ACTION_TYPE = 'SWAP_LANGUAGES_ACTION_TYPE';
 export const SET_DETECTED_LANG_ACTION_TYPE = 'SET_DETECTED_TEXT_ACTION_TYPE';
-export const INIT_ACTION_TYPE = 'INIT_ACTION_TYPE';
-
-const saveLanguagesToSessionStorage = state => {
-  sessionStorage.setItem(
-    'translationState',
-    JSON.stringify({ source: state.source, target: state.target }),
-  );
-};
-
-const savedState = sessionStorage.getItem('translationState')
-  ? JSON.parse(sessionStorage.getItem('translationState'))
-  : null;
 
 export const INITIAL_TRANSLATION_STATE = {
   query: '',
@@ -23,11 +11,9 @@ export const INITIAL_TRANSLATION_STATE = {
   source: 'auto',
   detectedSource: '',
   target: 'ru',
-  ...savedState,
 };
 
 export const translationReducer = (state = INITIAL_TRANSLATION_STATE, action) => {
-  let newState;
   switch (action.type) {
     case SET_QUERY_ACTION_TYPE:
       return { ...state, query: action.payload };
@@ -44,51 +30,41 @@ export const translationReducer = (state = INITIAL_TRANSLATION_STATE, action) =>
 
     case SET_SOURCE_ACTION_TYPE: {
       if (action.payload !== state.target) {
-        newState = { ...state, source: action.payload };
-        saveLanguagesToSessionStorage(newState);
-        return newState;
+        return { ...state, source: action.payload };
       }
 
       const sourceLang = state.source === 'auto' ? 'en' : state.source;
-      newState = {
+      return {
         ...state,
         source: state.target,
         target: sourceLang,
         query: state.translatedText,
         translatedText: state.query,
       };
-      saveLanguagesToSessionStorage(newState);
-      return newState;
     }
 
     case SET_TARGET_ACTION_TYPE: {
       if (action.payload !== state.source) {
-        newState = { ...state, target: action.payload };
-        saveLanguagesToSessionStorage(newState);
-        return newState;
+        return { ...state, target: action.payload };
       }
-      newState = {
+      return {
         ...state,
         source: state.target,
         target: state.source,
         query: state.translatedText,
         translatedText: state.query,
       };
-      saveLanguagesToSessionStorage(newState);
-      return newState;
     }
 
     case SWAP_LANGUAGES_ACTION_TYPE: {
       const sourceLang = state.source === 'auto' ? state.detectedSource : state.source;
-      newState = {
+      return {
         ...state,
         source: state.target,
         target: sourceLang,
         query: state.translatedText,
         translatedText: state.query,
       };
-      saveLanguagesToSessionStorage(newState);
-      return newState;
     }
 
     default:
