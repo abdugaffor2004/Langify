@@ -16,16 +16,20 @@ import {
 } from './reducer';
 import { useClipboard } from '@mantine/hooks';
 import { ErrorAlert } from './ErrorAlert';
-import { readSessionStorageValue } from '../../lib/storage/read-session-storage-value';
-import { writeSessionStorageValue } from '../../lib/storage/write-session-storage-value';
+import { readSessionStorageValue, writeSessionStorageValue } from '../../lib/storage/';
 
-const init = initialState => ({
+const SAVED_TRANSLATION_LANG = 'SAVED_TRANSLATION_LANG';
+const createTranslationInitialState = initialState => ({
   ...initialState,
-  ...readSessionStorageValue('translationLang'),
+  ...readSessionStorageValue(SAVED_TRANSLATION_LANG),
 });
 
 export const Translation = () => {
-  const [state, dispatch] = useReducer(translationReducer, INITIAL_TRANSLATION_STATE, init);
+  const [state, dispatch] = useReducer(
+    translationReducer,
+    INITIAL_TRANSLATION_STATE,
+    createTranslationInitialState,
+  );
 
   const trimmedQuery = state.query?.trim();
   const clipboard = useClipboard({ timeout: 1200 });
@@ -74,8 +78,11 @@ export const Translation = () => {
   };
 
   useEffect(() => {
-    writeSessionStorageValue('translationLang', { source: state.source, target: state.target });
-  }, [state]);
+    writeSessionStorageValue(SAVED_TRANSLATION_LANG, {
+      source: state.source,
+      target: state.target,
+    });
+  }, [state.source, state.target]);
 
   return (
     <Container size="xl" className={styles.container}>
