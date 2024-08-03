@@ -16,21 +16,19 @@ import {
 } from './reducer';
 import { useClipboard } from '@mantine/hooks';
 import { ErrorAlert } from './ErrorAlert';
-import { writeSessionStorageValue } from '../../helpers/WriteSessionStorage';
-import { readSessionStorageValue } from '../../helpers/ReadSessionStorage';
+import { readSessionStorageValue } from '../../lib/storage/read-session-storage-value';
+import { writeSessionStorageValue } from '../../lib/storage/write-session-storage-value';
+
+const init = initialState => ({
+  ...initialState,
+  ...readSessionStorageValue('translationLang'),
+});
 
 export const Translation = () => {
-  const [state, dispatch] = useReducer(translationReducer, {
-    ...INITIAL_TRANSLATION_STATE,
-    ...readSessionStorageValue('translationLang'),
-  });
+  const [state, dispatch] = useReducer(translationReducer, INITIAL_TRANSLATION_STATE, init);
 
   const trimmedQuery = state.query?.trim();
   const clipboard = useClipboard({ timeout: 1200 });
-
-  useEffect(() => {
-    writeSessionStorageValue('translationLang', { source: state.source, target: state.target });
-  }, [state]);
 
   const { mutate, isError, isPending, error } = useMutation({
     mutationFn: () =>
@@ -74,6 +72,10 @@ export const Translation = () => {
   const handleLangsSwap = () => {
     dispatch({ type: SWAP_LANGUAGES_ACTION_TYPE });
   };
+
+  useEffect(() => {
+    writeSessionStorageValue('translationLang', { source: state.source, target: state.target });
+  }, [state]);
 
   return (
     <Container size="xl" className={styles.container}>
