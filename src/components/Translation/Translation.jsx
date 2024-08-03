@@ -18,10 +18,10 @@ import { useClipboard } from '@mantine/hooks';
 import { ErrorAlert } from './ErrorAlert';
 import { readSessionStorageValue, writeSessionStorageValue } from '../../lib/storage/';
 
-const SAVED_TRANSLATION_LANG = 'SAVED_TRANSLATION_LANG';
+const SS_TRANSLATION = 'translations';
 const createTranslationInitialState = initialState => ({
   ...initialState,
-  ...readSessionStorageValue(SAVED_TRANSLATION_LANG),
+  ...readSessionStorageValue(SS_TRANSLATION),
 });
 
 export const Translation = () => {
@@ -78,7 +78,7 @@ export const Translation = () => {
   };
 
   useEffect(() => {
-    writeSessionStorageValue(SAVED_TRANSLATION_LANG, {
+    writeSessionStorageValue(SS_TRANSLATION, {
       source: state.source,
       target: state.target,
     });
