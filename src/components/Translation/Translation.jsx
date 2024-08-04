@@ -1,5 +1,5 @@
 import { Button, Container, Grid, Textarea, Tooltip, ActionIcon } from '@mantine/core';
-import { useCallback, useReducer } from 'react';
+import { useCallback, useEffect, useReducer } from 'react';
 import { translate } from 'google-translate-api-browser';
 import { useMutation } from '@tanstack/react-query';
 import { LangSelect } from '../LangSelect';
@@ -16,9 +16,21 @@ import {
 } from './reducer';
 import { useClipboard } from '@mantine/hooks';
 import { ErrorAlert } from './ErrorAlert';
+import { readSessionStorageValue, writeSessionStorageValue } from '../../lib/storage/';
+
+const SS_TRANSLATION = 'translations';
+const createTranslationInitialState = initialState => ({
+  ...initialState,
+  ...readSessionStorageValue(SS_TRANSLATION),
+});
 
 export const Translation = () => {
-  const [state, dispatch] = useReducer(translationReducer, INITIAL_TRANSLATION_STATE);
+  const [state, dispatch] = useReducer(
+    translationReducer,
+    INITIAL_TRANSLATION_STATE,
+    createTranslationInitialState,
+  );
+
   const trimmedQuery = state.query?.trim();
   const clipboard = useClipboard({ timeout: 1200 });
 
@@ -64,6 +76,13 @@ export const Translation = () => {
   const handleLangsSwap = () => {
     dispatch({ type: SWAP_LANGUAGES_ACTION_TYPE });
   };
+
+  useEffect(() => {
+    writeSessionStorageValue(SS_TRANSLATION, {
+      source: state.source,
+      target: state.target,
+    });
+  }, [state.source, state.target]);
 
   return (
     <Container size="xl" className={styles.container}>
