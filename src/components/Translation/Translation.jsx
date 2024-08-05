@@ -3,7 +3,13 @@ import { useCallback, useEffect, useReducer } from 'react';
 import { translate } from 'google-translate-api-browser';
 import { useMutation } from '@tanstack/react-query';
 import { LangSelect } from '../LangSelect';
-import { TbArrowsLeftRight, TbCopy, TbCopyCheckFilled, TbLanguage } from 'react-icons/tb';
+import {
+  TbArrowsLeftRight,
+  TbCopy,
+  TbCopyCheckFilled,
+  TbLanguage,
+  TbHistory,
+} from 'react-icons/tb';
 import styles from './Translation.module.css';
 import {
   INITIAL_TRANSLATION_STATE,
@@ -14,11 +20,18 @@ import {
   SET_TARGET_ACTION_TYPE,
   TRANSLATE_ACTION_TYPE,
 } from './reducer';
-import { useClipboard } from '@mantine/hooks';
+import { useClipboard, useDisclosure } from '@mantine/hooks';
 import { ErrorAlert } from './ErrorAlert';
-import { readSessionStorageValue, writeSessionStorageValue } from '../../lib/storage/';
+import {
+  clearLocalStorageValue,
+  readLocalStorageValue,
+  readSessionStorageValue,
+  writeLocalStorageValue,
+  writeSessionStorageValue,
+} from '../../lib/storage/';
+import { TranslationHistory } from '../TranslationHistory/TranslationHistory';
 
-const SS_TRANSLATION = 'translations';
+export const SS_TRANSLATION = 'translations';
 const createTranslationInitialState = initialState => ({
   ...initialState,
   ...readSessionStorageValue(SS_TRANSLATION),
@@ -33,6 +46,8 @@ export const Translation = () => {
 
   const trimmedQuery = state.query?.trim();
   const clipboard = useClipboard({ timeout: 1200 });
+  const [opened, { open, close }] = useDisclosure(false);
+  const history = readLocalStorageValue(SS_TRANSLATION);
 
   const { mutate, isError, isPending, error } = useMutation({
     mutationFn: () =>
@@ -48,6 +63,11 @@ export const Translation = () => {
           text: data.text,
           language: data.from.language.iso,
         },
+      });
+
+      writeLocalStorageValue(SS_TRANSLATION, {
+        query: data.from.text.value,
+        translatedText: data.text,
       });
     },
   });
@@ -77,6 +97,11 @@ export const Translation = () => {
     dispatch({ type: SWAP_LANGUAGES_ACTION_TYPE });
   };
 
+  const handleHistoryClear = () => {
+    clearLocalStorageValue(SS_TRANSLATION);
+    close();
+  };
+
   useEffect(() => {
     writeSessionStorageValue(SS_TRANSLATION, {
       source: state.source,
@@ -86,8 +111,15 @@ export const Translation = () => {
 
   return (
     <Container size="xl" className={styles.container}>
+      <TranslationHistory
+        opened={opened}
+        close={close}
+        handleHistoryClear={handleHistoryClear}
+        history={history}
+      />
+
       <Grid className={styles.gridContainer}>
-        <Grid.Col span={5}>
+        <Grid.Col p={0} span={5}>
           <LangSelect
             detectedLang={state.detectedSource}
             withAuto
@@ -116,20 +148,33 @@ export const Translation = () => {
             </Button>
           </Tooltip>
 
-          <Tooltip label="Translate" transitionProps={{ duration: 350 }} offset={10}>
-            <Button
-              onClick={handleTranslate}
-              size="md"
-              disabled={!trimmedQuery}
-              loading={isPending}
-              className={styles.translateButton}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <Tooltip label="Translate" transitionProps={{ duration: 350 }} offset={10}>
+              <Button
+                onClick={handleTranslate}
+                size="md"
+                disabled={!trimmedQuery}
+                loading={isPending}
+                className={styles.translateButton}
+              >
+                {<TbLanguage size="24px" />}
+              </Button>
+            </Tooltip>
+
+            <Tooltip
+              label="History"
+              position="bottom"
+              transitionProps={{ duration: 350 }}
+              offset={10}
             >
-              {<TbLanguage size="24px" />}
-            </Button>
-          </Tooltip>
+              <Button onClick={open} size="md" className={styles.historyButton}>
+                {<TbHistory size="24px" />}
+              </Button>
+            </Tooltip>
+          </div>
         </Grid.Col>
 
-        <Grid.Col span={5}>
+        <Grid.Col p={0} span={5}>
           <LangSelect value={state.target} onChange={handleTargetChange} />
           <div className={styles.translationContainer}>
             <Textarea
