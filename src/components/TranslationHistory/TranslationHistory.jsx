@@ -1,5 +1,23 @@
-import { ActionIcon, Card, Drawer, Grid, Stack, Text, Title, Tooltip } from '@mantine/core';
+import { ActionIcon, Card, Drawer, Flex, Grid, Stack, Text, Title, Tooltip } from '@mantine/core';
 import { TbTrashFilled } from 'react-icons/tb';
+
+const formatDate = dateString => {
+  const date = new Date(dateString);
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+
+  const isToday = date.toLocaleDateString() === today.toLocaleDateString();
+  const isYesterday = date.toLocaleDateString() === yesterday.toLocaleDateString();
+
+  if (isToday) {
+    return 'Today';
+  } else if (isYesterday) {
+    return 'Yesterday';
+  } else {
+    return date.toLocaleDateString();
+  }
+};
 
 export const TranslationHistory = ({ opened, close, handleHistoryClear, history }) => (
   <Drawer.Root
@@ -28,11 +46,14 @@ export const TranslationHistory = ({ opened, close, handleHistoryClear, history 
         <Grid gutter={'lg'} grow>
           {history.map((item, index) => (
             <Grid.Col key={index} span={'content'}>
-              <Card shadow="sm" padding="lg" radius="md" withBorder>
-                <Stack gap={3}>
-                  <Title size="h4">{item.query}</Title>
-                  <Text>{item.translatedText}</Text>
-                </Stack>
+              <Card padding="lg" shadow="sm" radius="md" withBorder>
+                <Flex justify={'space-between'}>
+                  <Stack gap={3} padding="lg">
+                    <Title size="h4">{item.query}</Title>
+                    <Text>{item.translatedText}</Text>
+                  </Stack>
+                  <Text color="dimmed">{formatDate(item.date)}</Text>
+                </Flex>
               </Card>
             </Grid.Col>
           ))}

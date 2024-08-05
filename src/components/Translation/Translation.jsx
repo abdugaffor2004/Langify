@@ -68,6 +68,7 @@ export const Translation = () => {
       writeLocalStorageValue(SS_TRANSLATION, {
         query: data.from.text.value,
         translatedText: data.text,
+        date: new Date()
       });
     },
   });
