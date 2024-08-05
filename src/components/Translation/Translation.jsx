@@ -23,9 +23,10 @@ import {
 import { useClipboard, useDisclosure, useLocalStorage } from '@mantine/hooks';
 import { ErrorAlert } from './ErrorAlert';
 import { readSessionStorageValue, writeSessionStorageValue } from '../../lib/storage/';
-import { TranslationHistoryDrawer } from '../TranslationHistory/TranslationHistory';
+import { TranslationHistoryDrawer } from '../TranslationHistoryDrawer';
 
-export const SS_TRANSLATION = 'translations';
+const SS_TRANSLATION = 'languages';
+const LS_TRANSLATION = 'translations';
 const createTranslationInitialState = initialState => ({
   ...initialState,
   ...readSessionStorageValue(SS_TRANSLATION),
@@ -41,14 +42,14 @@ export const Translation = () => {
   const trimmedQuery = state.query?.trim();
   const clipboard = useClipboard({ timeout: 1200 });
   const [opened, { open, close }] = useDisclosure(false);
-  const [history, setHistory, removeValue] = useLocalStorage({
-    key: SS_TRANSLATION,
+  const [history, setHistory, clearHistory] = useLocalStorage({
+    key: LS_TRANSLATION,
     defaultValue: [],
-    deserialize: data => {
+    deserialize: rawHistory => {
       try {
-        return JSON.parse(data).map(item => ({
-          ...item,
-          tranlatedAt: new Date(item.tranlatedAt).toLocaleDateString(),
+        return JSON.parse(rawHistory).map(historyEntry => ({
+          ...historyEntry,
+          tranlatedAt: new Date(historyEntry.tranlatedAt).toLocaleDateString(),
         }));
       } catch (error) {
         console.error('Error deserializing history:', error);
@@ -56,7 +57,6 @@ export const Translation = () => {
       }
     },
   });
-  console.log(history);
   const { mutate, isError, isPending, error } = useMutation({
     mutationFn: () =>
       translate(trimmedQuery, {
@@ -74,12 +74,12 @@ export const Translation = () => {
       });
 
       setHistory(prevHistory => [
-        ...prevHistory,
         {
           query: data.from.text.value,
           translatedText: data.text,
-          tranlatedAt: new Date().toLocaleDateString(),
+          tranlatedAt: new Date(),
         },
+        ...prevHistory,
       ]);
     },
   });
@@ -110,8 +110,12 @@ export const Translation = () => {
   };
 
   const handleHistoryClear = () => {
-    removeValue();
+    clearHistory();
     close();
+  };
+
+  const handleTranslationCopy = () => {
+    clipboard.copy(state.translatedText);
   };
 
   useEffect(() => {
@@ -211,7 +215,7 @@ export const Translation = () => {
                 color={clipboard.copied ? 'teal' : 'blue'}
                 size="32px"
                 variant="subtle"
-                onClick={() => clipboard.copy(state.translatedText)}
+                onClick={handleTranslationCopy}
               >
                 {clipboard.copied ? <TbCopyCheckFilled size="24px" /> : <TbCopy size="24px" />}
               </ActionIcon>

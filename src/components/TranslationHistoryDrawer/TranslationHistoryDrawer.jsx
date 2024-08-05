@@ -33,7 +33,7 @@ export const TranslationHistoryDrawer = ({ opened, close, onClear, history }) =>
                   <Title size="h4">{item.query}</Title>
                   <Text>{item.translatedText}</Text>
                 </Stack>
-                <Text color="dimmed">{item.tranlatedAt}</Text>
+                <Text color="dimmed">{new Date(item.tranlatedAt).toLocaleDateString()}</Text>
               </Flex>
             </Card>
           ))}
