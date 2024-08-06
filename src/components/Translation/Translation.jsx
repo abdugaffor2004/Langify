@@ -65,18 +65,26 @@ export const Translation = () => {
         corsUrl: 'http://cors-anywhere.herokuapp.com/',
       }),
     onSuccess: data => {
+      const {
+        text,
+        from: {
+          language: { iso },
+          text: { value },
+        },
+      } = data;
+
       dispatch({
         type: TRANSLATE_ACTION_TYPE,
         payload: {
-          text: data.text,
-          language: data.from.language.iso,
+          text,
+          language: iso,
         },
       });
 
       setHistory(prevHistory => [
         {
-          query: data.from.text.value,
-          translatedText: data.text,
+          query: value,
+          translatedText: text,
           tranlatedAt: new Date(),
         },
         ...prevHistory,
