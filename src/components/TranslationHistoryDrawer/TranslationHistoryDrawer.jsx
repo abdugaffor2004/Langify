@@ -1,5 +1,5 @@
-import { ActionIcon, Card, Drawer, Flex, Stack, Text, Title, Tooltip } from '@mantine/core';
-import { TbTrashFilled } from 'react-icons/tb';
+import { ActionIcon, Card, Drawer, Flex, Text, Title, Tooltip } from '@mantine/core';
+import { TbTrashFilled, TbArrowNarrowRight, TbArrowNarrowDown } from 'react-icons/tb';
 
 export const TranslationHistoryDrawer = ({ opened, onClose, onClear, history }) => (
   <Drawer.Root
@@ -27,13 +27,26 @@ export const TranslationHistoryDrawer = ({ opened, onClose, onClear, history }) 
       <Drawer.Body>
         <Flex direction="column" gap="sm">
           {history.map((item, index) => (
-            <Card key={index} padding="lg" shadow="sm" radius="md" withBorder>
-              <Flex justify="space-between">
-                <Stack gap={3} padding="lg">
-                  <Title size="h4">{item.query}</Title>
-                  <Text>{item.translatedText}</Text>
-                </Stack>
+            <Card key={index} padding="lg" pt="10px" shadow="sm" radius="md" withBorder>
+              <Flex justify="flex-end" pb="5px">
                 <Text color="dimmed">{new Date(item.tranlatedAt).toLocaleDateString()}</Text>
+              </Flex>
+
+              <Flex
+                justify={item.query.length > 20 && 'center'}
+                wrap="wrap"
+                align="center"
+                gap="xs"
+              >
+                <Title size="h4">{item.query}</Title>
+                {item.query.length > 20 ? (
+                  <TbArrowNarrowDown size="24px" />
+                ) : (
+                  <TbArrowNarrowRight size="20px" />
+                )}
+                <Title c="dimmed" size="h4">
+                  {item.translatedText}
+                </Title>
               </Flex>
             </Card>
           ))}
