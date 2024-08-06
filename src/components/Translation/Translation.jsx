@@ -69,7 +69,6 @@ export const Translation = () => {
         text,
         from: {
           language: { iso },
-          text: { value },
         },
       } = data;
 
@@ -83,7 +82,7 @@ export const Translation = () => {
 
       setHistory(prevHistory => [
         {
-          query: value,
+          query: state.query,
           translatedText: text,
           tranlatedAt: new Date(),
         },
