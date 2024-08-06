@@ -13,15 +13,37 @@
 }
 
 .middleActions {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  display: grid;
+  grid-template-rows: min-content 1fr min-content;
+  justify-items: center;
   align-items: center;
+  gap: 10px;
+  padding: 0;
 }
 
-.translateButton {
+.translationActions {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.swapButton,
+.translateButton,
+.historyButton {
+  max-width: 100%;
   transition: background-color 0.3s ease, color 0.3s ease, opacity 0.3s ease;
-  margin: 0 0 auto 0;
+}
+
+.translateButton,
+.historyButton{
+  width: auto; 
+  height: auto; 
+  padding: 12px 24px; 
+  display: flex;
+  align-Items: center;
+  justify-Content: center;
+  border: 1px solid transparent; 
+  border-Radius: 4px; 
 }
 
 .translationContainer {
@@ -38,8 +60,4 @@
   right: 0;
   margin: 20px;
   background: none;
-}
-
-.swapButton {
-  margin-bottom: auto;
 }
