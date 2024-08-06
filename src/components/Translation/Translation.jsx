@@ -49,7 +49,7 @@ export const Translation = () => {
       try {
         return JSON.parse(rawHistory).map(historyEntry => ({
           ...historyEntry,
-          tranlatedAt: new Date(historyEntry.tranlatedAt).toLocaleDateString(),
+          tranlatedAt: new Date(historyEntry.tranlatedAt),
         }));
       } catch (error) {
         console.error('Error deserializing history:', error);
@@ -129,7 +129,7 @@ export const Translation = () => {
     <Container size="xl" className={styles.container}>
       <TranslationHistoryDrawer
         opened={opened}
-        close={close}
+        onClose={close}
         onClear={handleHistoryClear}
         history={history}
       />

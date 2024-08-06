@@ -1,14 +1,14 @@
 import { ActionIcon, Card, Drawer, Flex, Stack, Text, Title, Tooltip } from '@mantine/core';
 import { TbTrashFilled } from 'react-icons/tb';
 
-export const TranslationHistoryDrawer = ({ opened, close, onClear, history }) => (
+export const TranslationHistoryDrawer = ({ opened, onClose, onClear, history }) => (
   <Drawer.Root
     position="right"
     offset={8}
     radius="md"
     withCloseButton={false}
     opened={opened}
-    onClose={close}
+    onClose={onClose}
   >
     <Drawer.Overlay />
     <Drawer.Content>
