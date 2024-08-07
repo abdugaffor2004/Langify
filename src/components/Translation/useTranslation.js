@@ -7,9 +7,8 @@ import {
   SWAP_LANGUAGES_ACTION_TYPE,
   TRANSLATE_ACTION_TYPE,
   translationReducer,
-} from '../components/Translation/reducer';
-import { readSessionStorageValue } from '@mantine/hooks';
-import { writeSessionStorageValue } from '../lib/storage';
+} from './reducer';
+import { readSessionStorageValue, writeSessionStorageValue } from '../../lib/storage';
 
 const SS_TRANSLATION = 'languages';
 const createTranslationInitialState = initialState => ({
@@ -18,13 +17,13 @@ const createTranslationInitialState = initialState => ({
 });
 
 export const useTranslation = () => {
-  const [state, dispatch] = useReducer(
+  const [{ query, translatedText, target, source, detectedSource }, dispatch] = useReducer(
     translationReducer,
     INITIAL_TRANSLATION_STATE,
     createTranslationInitialState,
   );
 
-  const handleTranslation = ({ text, iso }) => {
+  const translate = (text, iso) => {
     dispatch({
       type: TRANSLATE_ACTION_TYPE,
       payload: {
@@ -34,35 +33,39 @@ export const useTranslation = () => {
     });
   };
 
-  const handleInputChange = event => {
+  const changeInput = event => {
     dispatch({ type: SET_QUERY_ACTION_TYPE, payload: event.currentTarget.value });
   };
 
-  const handleSourceChange = value => {
+  const changeSource = value => {
     dispatch({ type: SET_SOURCE_ACTION_TYPE, payload: value });
   };
 
-  const handleTargetChange = value => {
+  const changeTarget = value => {
     dispatch({ type: SET_TARGET_ACTION_TYPE, payload: value });
   };
 
-  const handleLangsSwap = () => {
+  const swapLanguages = () => {
     dispatch({ type: SWAP_LANGUAGES_ACTION_TYPE });
   };
 
   useEffect(() => {
     writeSessionStorageValue(SS_TRANSLATION, {
-      source: state.source,
-      target: state.target,
+      source,
+      target,
     });
-  }, [state.source, state.target]);
+  }, [source, target]);
 
   return {
-    state,
-    handleTranslation,
-    handleInputChange,
-    handleSourceChange,
-    handleTargetChange,
-    handleLangsSwap,
+    query,
+    translatedText,
+    target,
+    source,
+    detectedSource,
+    translateTranslation: translate,
+    handleInputChange: changeInput,
+    handleSourceChange: changeSource,
+    handleTargetChange: changeTarget,
+    handleLangsSwap: swapLanguages,
   };
 };

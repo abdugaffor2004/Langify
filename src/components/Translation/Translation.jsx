@@ -14,20 +14,24 @@ import styles from './Translation.module.css';
 import { useClipboard, useDisclosure, useLocalStorage } from '@mantine/hooks';
 import { ErrorAlert } from '../ErrorAlert';
 import { TranslationHistoryDrawer } from '../TranslationHistoryDrawer';
-import { useTranslation } from '../../hooks/useTranslation';
+import { useTranslation } from './useTranslation';
 
 const LS_TRANSLATION = 'translations';
 
 export const Translation = () => {
   const {
-    state,
-    handleTranslation,
+    query,
+    translatedText,
+    target,
+    source,
+    detectedSource,
+    translateTranslation,
     handleInputChange,
-    handleLangsSwap,
     handleSourceChange,
     handleTargetChange,
+    handleLangsSwap,
   } = useTranslation();
-  const trimmedQuery = state.query?.trim();
+  const trimmedQuery = query?.trim();
   const clipboard = useClipboard({ timeout: 1200 });
   const [opened, { open, close }] = useDisclosure(false);
   const [history, setHistory, clearHistory] = useLocalStorage({
@@ -45,11 +49,12 @@ export const Translation = () => {
       }
     },
   });
+
   const { mutate, isError, isPending, error } = useMutation({
     mutationFn: () =>
       translate(trimmedQuery, {
-        to: state.target,
-        from: state.source,
+        to: target,
+        from: source,
         corsUrl: 'http://cors-anywhere.herokuapp.com/',
       }),
     onSuccess: data => {
@@ -60,11 +65,11 @@ export const Translation = () => {
         },
       } = data;
 
-      handleTranslation(text, iso);
+      translateTranslation(text, iso);
 
       setHistory(prevHistory => [
         {
-          query: state.query,
+          query: query,
           translatedText: text,
           tranlatedAt: new Date(),
         },
@@ -73,7 +78,7 @@ export const Translation = () => {
     },
   });
 
-  const handleMutation = useCallback(() => {
+  const handleTranslate = useCallback(() => {
     if (trimmedQuery === '') {
       throw new Error(
         'There is no input value, please provide some meaningful data for translation',
@@ -88,7 +93,7 @@ export const Translation = () => {
   };
 
   const handleTranslationCopy = () => {
-    clipboard.copy(state.translatedText);
+    clipboard.copy(translatedText);
   };
 
   return (
@@ -103,15 +108,15 @@ export const Translation = () => {
       <Grid className={styles.gridContainer}>
         <Grid.Col p={0} span={5}>
           <LangSelect
-            detectedLang={state.detectedSource}
+            detectedLang={detectedSource}
             withAuto
-            value={state.source}
+            value={source}
             onChange={handleSourceChange}
           />
           <Textarea
             placeholder="Text"
             className={styles.textarea}
-            value={state.query}
+            value={query}
             onChange={handleInputChange}
             autosize
             size="lg"
@@ -123,7 +128,7 @@ export const Translation = () => {
           <Tooltip label="swap the languages" transitionProps={{ duration: 350 }} offset={10}>
             <ActionIcon
               size="38px"
-              disabled={state.source === 'auto' && !state.detectedSource}
+              disabled={source === 'auto' && !detectedSource}
               onClick={handleLangsSwap}
               className={styles.swapButton}
             >
@@ -134,7 +139,7 @@ export const Translation = () => {
           <div className={styles.translationActions}>
             <Tooltip label="Translate" transitionProps={{ duration: 350 }} offset={10}>
               <ActionIcon
-                onClick={handleMutation}
+                onClick={handleTranslate}
                 size="lg"
                 disabled={!trimmedQuery}
                 loading={isPending}
@@ -158,12 +163,12 @@ export const Translation = () => {
         </Grid.Col>
 
         <Grid.Col p={0} span={5}>
-          <LangSelect value={state.target} onChange={handleTargetChange} />
+          <LangSelect value={target} onChange={handleTargetChange} />
           <div className={styles.translationContainer}>
             <Textarea
               placeholder="Translation"
               className={styles.textarea}
-              value={state.translatedText}
+              value={translatedText}
               autosize
               size="lg"
               minRows={8}
@@ -171,13 +176,13 @@ export const Translation = () => {
             />
 
             <Tooltip
-              disabled={!state.translatedText}
+              disabled={!translatedText}
               label={clipboard.copied ? 'Copied' : 'Copy'}
               position="right"
             >
               <ActionIcon
                 className={styles.copyButton}
-                disabled={!state.translatedText}
+                disabled={!translatedText}
                 color={clipboard.copied ? 'teal' : 'blue'}
                 size="32px"
                 variant="subtle"
