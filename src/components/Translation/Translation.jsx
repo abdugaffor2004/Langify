@@ -1,4 +1,4 @@
-import { Container, Grid, Textarea, Tooltip, ActionIcon } from '@mantine/core';
+import { Grid, Textarea, Tooltip, ActionIcon } from '@mantine/core';
 import { useCallback, useEffect, useReducer } from 'react';
 import { translate } from 'google-translate-api-browser';
 import { useMutation } from '@tanstack/react-query';
@@ -21,7 +21,7 @@ import {
   TRANSLATE_ACTION_TYPE,
 } from './reducer';
 import { useClipboard, useDisclosure, useLocalStorage } from '@mantine/hooks';
-import { ErrorAlert } from './ErrorAlert';
+import { ErrorAlert } from '../ErrorAlert';
 import { readSessionStorageValue, writeSessionStorageValue } from '../../lib/storage/';
 import { TranslationHistoryDrawer } from '../TranslationHistoryDrawer';
 
@@ -133,7 +133,7 @@ export const Translation = () => {
   }, [state.source, state.target]);
 
   return (
-    <Container size="xl" className={styles.container}>
+    <>
       <TranslationHistoryDrawer
         opened={opened}
         onClose={close}
@@ -233,6 +233,6 @@ export const Translation = () => {
           {clipboard.error && <ErrorAlert error={clipboard.error} />}
         </Grid.Col>
       </Grid>
-    </Container>
+    </>
   );
 };

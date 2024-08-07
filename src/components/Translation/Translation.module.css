@@ -1,10 +1,3 @@
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
 .gridContainer {
   display: flex;
   flex-direction: column;
@@ -35,15 +28,15 @@
 }
 
 .translateButton,
-.historyButton{
-  width: auto; 
-  height: auto; 
-  padding: 12px 24px; 
+.historyButton {
+  width: auto;
+  height: auto;
+  padding: 12px 24px;
   display: flex;
-  align-Items: center;
-  justify-Content: center;
-  border: 1px solid transparent; 
-  border-Radius: 4px; 
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 4px;
 }
 
 .translationContainer {
