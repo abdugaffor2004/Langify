@@ -1,5 +1,5 @@
 import { Grid, Textarea, Tooltip, ActionIcon } from '@mantine/core';
-import { useCallback, useEffect, useReducer } from 'react';
+import { useCallback } from 'react';
 import { translate } from 'google-translate-api-browser';
 import { useMutation } from '@tanstack/react-query';
 import { LangSelect } from '../LangSelect';
@@ -11,34 +11,22 @@ import {
   TbHistory,
 } from 'react-icons/tb';
 import styles from './Translation.module.css';
-import {
-  INITIAL_TRANSLATION_STATE,
-  translationReducer,
-  SET_QUERY_ACTION_TYPE,
-  SET_SOURCE_ACTION_TYPE,
-  SWAP_LANGUAGES_ACTION_TYPE,
-  SET_TARGET_ACTION_TYPE,
-  TRANSLATE_ACTION_TYPE,
-} from './reducer';
 import { useClipboard, useDisclosure, useLocalStorage } from '@mantine/hooks';
 import { ErrorAlert } from '../ErrorAlert';
-import { readSessionStorageValue, writeSessionStorageValue } from '../../lib/storage/';
 import { TranslationHistoryDrawer } from '../TranslationHistoryDrawer';
+import { useTranslation } from '../../hooks/useTranslation';
 
-const SS_TRANSLATION = 'languages';
 const LS_TRANSLATION = 'translations';
-const createTranslationInitialState = initialState => ({
-  ...initialState,
-  ...readSessionStorageValue(SS_TRANSLATION),
-});
 
 export const Translation = () => {
-  const [state, dispatch] = useReducer(
-    translationReducer,
-    INITIAL_TRANSLATION_STATE,
-    createTranslationInitialState,
-  );
-
+  const {
+    state,
+    handleTranslation,
+    handleInputChange,
+    handleLangsSwap,
+    handleSourceChange,
+    handleTargetChange,
+  } = useTranslation();
   const trimmedQuery = state.query?.trim();
   const clipboard = useClipboard({ timeout: 1200 });
   const [opened, { open, close }] = useDisclosure(false);
@@ -72,13 +60,7 @@ export const Translation = () => {
         },
       } = data;
 
-      dispatch({
-        type: TRANSLATE_ACTION_TYPE,
-        payload: {
-          text,
-          language: iso,
-        },
-      });
+      handleTranslation(text, iso);
 
       setHistory(prevHistory => [
         {
@@ -91,7 +73,7 @@ export const Translation = () => {
     },
   });
 
-  const handleTranslate = useCallback(() => {
+  const handleMutation = useCallback(() => {
     if (trimmedQuery === '') {
       throw new Error(
         'There is no input value, please provide some meaningful data for translation',
@@ -99,22 +81,6 @@ export const Translation = () => {
     }
     mutate();
   }, [trimmedQuery, mutate]);
-
-  const handleInputChange = event => {
-    dispatch({ type: SET_QUERY_ACTION_TYPE, payload: event.currentTarget.value });
-  };
-
-  const handleSourceChange = value => {
-    dispatch({ type: SET_SOURCE_ACTION_TYPE, payload: value });
-  };
-
-  const handleTargetChange = value => {
-    dispatch({ type: SET_TARGET_ACTION_TYPE, payload: value });
-  };
-
-  const handleLangsSwap = () => {
-    dispatch({ type: SWAP_LANGUAGES_ACTION_TYPE });
-  };
 
   const handleHistoryClear = () => {
     clearHistory();
@@ -124,13 +90,6 @@ export const Translation = () => {
   const handleTranslationCopy = () => {
     clipboard.copy(state.translatedText);
   };
-
-  useEffect(() => {
-    writeSessionStorageValue(SS_TRANSLATION, {
-      source: state.source,
-      target: state.target,
-    });
-  }, [state.source, state.target]);
 
   return (
     <>
@@ -175,7 +134,7 @@ export const Translation = () => {
           <div className={styles.translationActions}>
             <Tooltip label="Translate" transitionProps={{ duration: 350 }} offset={10}>
               <ActionIcon
-                onClick={handleTranslate}
+                onClick={handleMutation}
                 size="lg"
                 disabled={!trimmedQuery}
                 loading={isPending}
