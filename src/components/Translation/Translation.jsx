@@ -1,7 +1,5 @@
 import { Grid, Textarea, Tooltip, ActionIcon } from '@mantine/core';
 import { useCallback } from 'react';
-import { translate } from 'google-translate-api-browser';
-import { useMutation } from '@tanstack/react-query';
 import { LangSelect } from '../LangSelect';
 import {
   TbArrowsLeftRight,
@@ -16,10 +14,12 @@ import { ErrorAlert } from '../ErrorAlert';
 import { TranslationHistoryDrawer } from '../TranslationHistoryDrawer';
 import { useTranslation } from './useTranslation';
 import { useTranslateHistoryStorage } from '../../hooks/useTranslateHistoryStorage';
+import { useTranslateMutation } from '../../hooks/useTranslateMutation';
 
 export const Translation = () => {
   const {
     query,
+    trimmedQuery,
     translatedText,
     target,
     source,
@@ -32,36 +32,28 @@ export const Translation = () => {
   } = useTranslation();
   const { history, clearHistory, setHistory } = useTranslateHistoryStorage();
   const [opened, { open, close }] = useDisclosure(false);
-  const trimmedQuery = query?.trim();
-  const clipboard = useClipboard({ timeout: 1200 });
 
-  const { mutate, isError, isPending, error } = useMutation({
-    mutationFn: () =>
-      translate(trimmedQuery, {
-        to: target,
-        from: source,
-        corsUrl: 'http://cors-anywhere.herokuapp.com/',
-      }),
-    onSuccess: data => {
-      const {
-        text,
-        from: {
-          language: { iso },
-        },
-      } = data;
-
+  const { error, isError, isPending, mutate } = useTranslateMutation({
+    onSuccess: ({
+      text,
+      from: {
+        language: { iso },
+        text: { value },
+      },
+    }) => {
       translateTranslation(text, iso);
-
       setHistory(prevHistory => [
         {
-          query: query,
+          query: value,
           translatedText: text,
-          tranlatedAt: new Date(),
+          translatedAt: new Date(),
         },
         ...prevHistory,
       ]);
     },
   });
+
+  const clipboard = useClipboard({ timeout: 1200 });
 
   const handleTranslate = useCallback(() => {
     if (trimmedQuery === '') {
@@ -69,8 +61,8 @@ export const Translation = () => {
         'There is no input value, please provide some meaningful data for translation',
       );
     }
-    mutate();
-  }, [trimmedQuery, mutate]);
+    mutate({ text: trimmedQuery, from: source, to: target });
+  }, [trimmedQuery, mutate, source, target]);
 
   const handleHistoryClear = () => {
     clearHistory();

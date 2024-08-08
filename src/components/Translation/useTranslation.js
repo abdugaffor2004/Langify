@@ -22,7 +22,7 @@ export const useTranslation = () => {
     INITIAL_TRANSLATION_STATE,
     createTranslationInitialState,
   );
-
+  const trimmedQuery = query?.trim();
   const translate = (text, iso) => {
     dispatch({
       type: TRANSLATE_ACTION_TYPE,
@@ -58,6 +58,7 @@ export const useTranslation = () => {
 
   return {
     query,
+    trimmedQuery,
     translatedText,
     target,
     source,

@@ -10,7 +10,7 @@ export const useTranslateHistoryStorage = () => {
       try {
         return JSON.parse(rawHistory).map(historyEntry => ({
           ...historyEntry,
-          tranlatedAt: new Date(historyEntry.tranlatedAt),
+          translatedAt: new Date(historyEntry.tranlatedAt),
         }));
       } catch (error) {
         console.error('Error deserializing history:', error);
