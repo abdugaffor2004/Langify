@@ -33,15 +33,15 @@ export const useTranslation = () => {
     });
   };
 
-  const changeInput = event => {
+  const setInput = event => {
     dispatch({ type: SET_QUERY_ACTION_TYPE, payload: event.currentTarget.value });
   };
 
-  const changeSource = value => {
+  const setSource = value => {
     dispatch({ type: SET_SOURCE_ACTION_TYPE, payload: value });
   };
 
-  const changeTarget = value => {
+  const setTarget = value => {
     dispatch({ type: SET_TARGET_ACTION_TYPE, payload: value });
   };
 
@@ -63,9 +63,9 @@ export const useTranslation = () => {
     source,
     detectedSource,
     translate,
-    changeInput,
-    changeSource,
-    changeTarget,
+    setInput,
+    setSource,
+    setTarget,
     swapLanguages,
   };
 };

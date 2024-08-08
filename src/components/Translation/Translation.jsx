@@ -26,11 +26,10 @@ export const Translation = () => {
     source,
     detectedSource,
     translate: translateTranslation,
-    changeInput: handleInputChange,
-    changeSource: handleSourceChange,
-    changeTarget: handleTargetChange,
-    swapLanguages: handleLangsSwap
-    
+    setInput,
+    setSource,
+    setTarget,
+    swapLanguages,
   } = useTranslation();
   const trimmedQuery = query?.trim();
   const clipboard = useClipboard({ timeout: 1200 });
@@ -108,17 +107,12 @@ export const Translation = () => {
 
       <Grid className={styles.gridContainer}>
         <Grid.Col p={0} span={5}>
-          <LangSelect
-            detectedLang={detectedSource}
-            withAuto
-            value={source}
-            onChange={handleSourceChange}
-          />
+          <LangSelect detectedLang={detectedSource} withAuto value={source} onChange={setSource} />
           <Textarea
             placeholder="Text"
             className={styles.textarea}
             value={query}
-            onChange={handleInputChange}
+            onChange={setInput}
             autosize
             size="lg"
             minRows={8}
@@ -130,7 +124,7 @@ export const Translation = () => {
             <ActionIcon
               size="38px"
               disabled={source === 'auto' && !detectedSource}
-              onClick={handleLangsSwap}
+              onClick={swapLanguages}
               className={styles.swapButton}
             >
               <TbArrowsLeftRight size="20px" />
@@ -164,7 +158,7 @@ export const Translation = () => {
         </Grid.Col>
 
         <Grid.Col p={0} span={5}>
-          <LangSelect value={target} onChange={handleTargetChange} />
+          <LangSelect value={target} onChange={setTarget} />
           <div className={styles.translationContainer}>
             <Textarea
               placeholder="Translation"
