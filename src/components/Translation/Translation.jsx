@@ -26,7 +26,7 @@ export const Translation = () => {
     source,
     detectedSource,
     translate: translateTranslation,
-    setInput,
+    setQuery,
     setSource,
     setTarget,
     swapLanguages,
@@ -96,6 +96,10 @@ export const Translation = () => {
     clipboard.copy(translatedText);
   };
 
+  const handleInputChange = event => {
+    setQuery(event.currentTarget.value);
+  };
+
   return (
     <>
       <TranslationHistoryDrawer
@@ -112,7 +116,7 @@ export const Translation = () => {
             placeholder="Text"
             className={styles.textarea}
             value={query}
-            onChange={setInput}
+            onChange={handleInputChange}
             autosize
             size="lg"
             minRows={8}
