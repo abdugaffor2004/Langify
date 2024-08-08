@@ -31,8 +31,11 @@ export const Translation = () => {
   } = useTranslation();
   const { history, clearHistory, setHistory } = useTranslateHistoryStorage();
   const [opened, { open, close }] = useDisclosure(false);
+
   const trimmedQuery = query?.trim();
-  const { error, isError, isPending, mutate } = useTranslateMutation(translateTranslation);
+  const { error, isError, isPending, mutate } = useTranslateMutation({
+    onSuccess: handleTranslationSuccess,
+  });
   const clipboard = useClipboard({ timeout: 1200 });
 
   const handleTranslate = useCallback(() => {
@@ -41,22 +44,27 @@ export const Translation = () => {
         'There is no input value, please provide some meaningful data for translation',
       );
     }
-    mutate(
-      { query: trimmedQuery, source, target },
-      {
-        onSuccess: data => {
-          setHistory(prevHistory => [
-            {
-              query: trimmedQuery,
-              translatedText: data.text,
-              tranlatedAt: new Date(),
-            },
-            ...prevHistory,
-          ]);
-        },
+    mutate({ query: trimmedQuery, source, target });
+  }, [trimmedQuery, mutate, source, target]);
+
+  function handleTranslationSuccess(data) {
+    const {
+      text,
+      from: {
+        language: { iso },
+        text: { value },
       },
-    );
-  }, [trimmedQuery, mutate, source, target, setHistory]);
+    } = data;
+    translateTranslation(text, iso);
+    setHistory(prevHistory => [
+      {
+        query: value,
+        translatedText: data.text,
+        tranlatedAt: new Date(),
+      },
+      ...prevHistory,
+    ]);
+  }
 
   const handleHistoryClear = () => {
     clearHistory();
