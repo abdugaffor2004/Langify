@@ -11,12 +11,11 @@ import {
   TbHistory,
 } from 'react-icons/tb';
 import styles from './Translation.module.css';
-import { useClipboard, useDisclosure, useLocalStorage } from '@mantine/hooks';
+import { useClipboard } from '@mantine/hooks';
 import { ErrorAlert } from '../ErrorAlert';
 import { TranslationHistoryDrawer } from '../TranslationHistoryDrawer';
 import { useTranslation } from './useTranslation';
-
-const LS_TRANSLATION = 'translations';
+import { useTranslateHistoryStorage } from '../../hooks/useTranslateHistoryStorage';
 
 export const Translation = () => {
   const {
@@ -31,24 +30,9 @@ export const Translation = () => {
     setTarget,
     swapLanguages,
   } = useTranslation();
+  const { opened, history, clearHistory, close, open, setHistory } = useTranslateHistoryStorage();
   const trimmedQuery = query?.trim();
   const clipboard = useClipboard({ timeout: 1200 });
-  const [opened, { open, close }] = useDisclosure(false);
-  const [history, setHistory, clearHistory] = useLocalStorage({
-    key: LS_TRANSLATION,
-    defaultValue: [],
-    deserialize: rawHistory => {
-      try {
-        return JSON.parse(rawHistory).map(historyEntry => ({
-          ...historyEntry,
-          tranlatedAt: new Date(historyEntry.tranlatedAt),
-        }));
-      } catch (error) {
-        console.error('Error deserializing history:', error);
-        return [];
-      }
-    },
-  });
 
   const { mutate, isError, isPending, error } = useMutation({
     mutationFn: () =>
