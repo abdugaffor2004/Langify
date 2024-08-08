@@ -34,8 +34,26 @@ export const Translation = () => {
 
   const trimmedQuery = query?.trim();
   const { error, isError, isPending, mutate } = useTranslateMutation({
-    onSuccess: handleTranslationSuccess,
+    onSuccess: data => {
+      const {
+        text,
+        from: {
+          language: { iso },
+          text: { value },
+        },
+      } = data;
+      translateTranslation(text, iso);
+      setHistory(prevHistory => [
+        {
+          query: value,
+          translatedText: text,
+          translatedAt: new Date(),
+        },
+        ...prevHistory,
+      ]);
+    },
   });
+
   const clipboard = useClipboard({ timeout: 1200 });
 
   const handleTranslate = useCallback(() => {
@@ -46,25 +64,6 @@ export const Translation = () => {
     }
     mutate({ query: trimmedQuery, source, target });
   }, [trimmedQuery, mutate, source, target]);
-
-  function handleTranslationSuccess(data) {
-    const {
-      text,
-      from: {
-        language: { iso },
-        text: { value },
-      },
-    } = data;
-    translateTranslation(text, iso);
-    setHistory(prevHistory => [
-      {
-        query: value,
-        translatedText: data.text,
-        tranlatedAt: new Date(),
-      },
-      ...prevHistory,
-    ]);
-  }
 
   const handleHistoryClear = () => {
     clearHistory();

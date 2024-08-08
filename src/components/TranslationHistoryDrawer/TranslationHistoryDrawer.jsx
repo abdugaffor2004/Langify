@@ -29,7 +29,7 @@ export const TranslationHistoryDrawer = ({ opened, onClose, onClear, history }) 
           {history.map((item, index) => (
             <Card key={index} padding="lg" pt="10px" shadow="sm" radius="md" withBorder>
               <Flex justify="flex-end" pb="5px">
-                <Text color="dimmed">{item.tranlatedAt.toLocaleDateString()}</Text>
+                <Text color="dimmed">{item.translatedAt.toLocaleDateString()}</Text>
               </Flex>
 
               <Flex
