@@ -62,10 +62,10 @@ export const useTranslation = () => {
     target,
     source,
     detectedSource,
-    translateTranslation: translate,
-    handleInputChange: changeInput,
-    handleSourceChange: changeSource,
-    handleTargetChange: changeTarget,
-    handleLangsSwap: swapLanguages,
+    translate,
+    changeInput,
+    changeSource,
+    changeTarget,
+    swapLanguages,
   };
 };

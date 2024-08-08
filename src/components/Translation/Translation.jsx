@@ -25,11 +25,12 @@ export const Translation = () => {
     target,
     source,
     detectedSource,
-    translateTranslation,
-    handleInputChange,
-    handleSourceChange,
-    handleTargetChange,
-    handleLangsSwap,
+    translate: translateTranslation,
+    changeInput: handleInputChange,
+    changeSource: handleSourceChange,
+    changeTarget: handleTargetChange,
+    swapLanguages: handleLangsSwap
+    
   } = useTranslation();
   const trimmedQuery = query?.trim();
   const clipboard = useClipboard({ timeout: 1200 });
