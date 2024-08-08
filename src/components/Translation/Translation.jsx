@@ -1,5 +1,5 @@
 import { Grid, Textarea, Tooltip, ActionIcon } from '@mantine/core';
-import { useCallback, useEffect, useReducer } from 'react';
+import { useCallback } from 'react';
 import { translate } from 'google-translate-api-browser';
 import { useMutation } from '@tanstack/react-query';
 import { LangSelect } from '../LangSelect';
@@ -11,35 +11,27 @@ import {
   TbHistory,
 } from 'react-icons/tb';
 import styles from './Translation.module.css';
-import {
-  INITIAL_TRANSLATION_STATE,
-  translationReducer,
-  SET_QUERY_ACTION_TYPE,
-  SET_SOURCE_ACTION_TYPE,
-  SWAP_LANGUAGES_ACTION_TYPE,
-  SET_TARGET_ACTION_TYPE,
-  TRANSLATE_ACTION_TYPE,
-} from './reducer';
 import { useClipboard, useDisclosure, useLocalStorage } from '@mantine/hooks';
 import { ErrorAlert } from '../ErrorAlert';
-import { readSessionStorageValue, writeSessionStorageValue } from '../../lib/storage/';
 import { TranslationHistoryDrawer } from '../TranslationHistoryDrawer';
+import { useTranslation } from './useTranslation';
 
-const SS_TRANSLATION = 'languages';
 const LS_TRANSLATION = 'translations';
-const createTranslationInitialState = initialState => ({
-  ...initialState,
-  ...readSessionStorageValue(SS_TRANSLATION),
-});
 
 export const Translation = () => {
-  const [state, dispatch] = useReducer(
-    translationReducer,
-    INITIAL_TRANSLATION_STATE,
-    createTranslationInitialState,
-  );
-
-  const trimmedQuery = state.query?.trim();
+  const {
+    query,
+    translatedText,
+    target,
+    source,
+    detectedSource,
+    translate: translateTranslation,
+    setQuery,
+    setSource,
+    setTarget,
+    swapLanguages,
+  } = useTranslation();
+  const trimmedQuery = query?.trim();
   const clipboard = useClipboard({ timeout: 1200 });
   const [opened, { open, close }] = useDisclosure(false);
   const [history, setHistory, clearHistory] = useLocalStorage({
@@ -57,11 +49,12 @@ export const Translation = () => {
       }
     },
   });
+
   const { mutate, isError, isPending, error } = useMutation({
     mutationFn: () =>
       translate(trimmedQuery, {
-        to: state.target,
-        from: state.source,
+        to: target,
+        from: source,
         corsUrl: 'http://cors-anywhere.herokuapp.com/',
       }),
     onSuccess: data => {
@@ -72,17 +65,11 @@ export const Translation = () => {
         },
       } = data;
 
-      dispatch({
-        type: TRANSLATE_ACTION_TYPE,
-        payload: {
-          text,
-          language: iso,
-        },
-      });
+      translateTranslation(text, iso);
 
       setHistory(prevHistory => [
         {
-          query: state.query,
+          query: query,
           translatedText: text,
           tranlatedAt: new Date(),
         },
@@ -100,37 +87,18 @@ export const Translation = () => {
     mutate();
   }, [trimmedQuery, mutate]);
 
-  const handleInputChange = event => {
-    dispatch({ type: SET_QUERY_ACTION_TYPE, payload: event.currentTarget.value });
-  };
-
-  const handleSourceChange = value => {
-    dispatch({ type: SET_SOURCE_ACTION_TYPE, payload: value });
-  };
-
-  const handleTargetChange = value => {
-    dispatch({ type: SET_TARGET_ACTION_TYPE, payload: value });
-  };
-
-  const handleLangsSwap = () => {
-    dispatch({ type: SWAP_LANGUAGES_ACTION_TYPE });
-  };
-
   const handleHistoryClear = () => {
     clearHistory();
     close();
   };
 
   const handleTranslationCopy = () => {
-    clipboard.copy(state.translatedText);
+    clipboard.copy(translatedText);
   };
 
-  useEffect(() => {
-    writeSessionStorageValue(SS_TRANSLATION, {
-      source: state.source,
-      target: state.target,
-    });
-  }, [state.source, state.target]);
+  const handleInputChange = event => {
+    setQuery(event.currentTarget.value);
+  };
 
   return (
     <>
@@ -143,16 +111,11 @@ export const Translation = () => {
 
       <Grid className={styles.gridContainer}>
         <Grid.Col p={0} span={5}>
-          <LangSelect
-            detectedLang={state.detectedSource}
-            withAuto
-            value={state.source}
-            onChange={handleSourceChange}
-          />
+          <LangSelect detectedLang={detectedSource} withAuto value={source} onChange={setSource} />
           <Textarea
             placeholder="Text"
             className={styles.textarea}
-            value={state.query}
+            value={query}
             onChange={handleInputChange}
             autosize
             size="lg"
@@ -164,8 +127,8 @@ export const Translation = () => {
           <Tooltip label="swap the languages" transitionProps={{ duration: 350 }} offset={10}>
             <ActionIcon
               size="38px"
-              disabled={state.source === 'auto' && !state.detectedSource}
-              onClick={handleLangsSwap}
+              disabled={source === 'auto' && !detectedSource}
+              onClick={swapLanguages}
               className={styles.swapButton}
             >
               <TbArrowsLeftRight size="20px" />
@@ -199,12 +162,12 @@ export const Translation = () => {
         </Grid.Col>
 
         <Grid.Col p={0} span={5}>
-          <LangSelect value={state.target} onChange={handleTargetChange} />
+          <LangSelect value={target} onChange={setTarget} />
           <div className={styles.translationContainer}>
             <Textarea
               placeholder="Translation"
               className={styles.textarea}
-              value={state.translatedText}
+              value={translatedText}
               autosize
               size="lg"
               minRows={8}
@@ -212,13 +175,13 @@ export const Translation = () => {
             />
 
             <Tooltip
-              disabled={!state.translatedText}
+              disabled={!translatedText}
               label={clipboard.copied ? 'Copied' : 'Copy'}
               position="right"
             >
               <ActionIcon
                 className={styles.copyButton}
-                disabled={!state.translatedText}
+                disabled={!translatedText}
                 color={clipboard.copied ? 'teal' : 'blue'}
                 size="32px"
                 variant="subtle"
