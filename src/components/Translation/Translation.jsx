@@ -11,7 +11,7 @@ import {
   TbHistory,
 } from 'react-icons/tb';
 import styles from './Translation.module.css';
-import { useClipboard } from '@mantine/hooks';
+import { useClipboard, useDisclosure } from '@mantine/hooks';
 import { ErrorAlert } from '../ErrorAlert';
 import { TranslationHistoryDrawer } from '../TranslationHistoryDrawer';
 import { useTranslation } from './useTranslation';
@@ -30,7 +30,8 @@ export const Translation = () => {
     setTarget,
     swapLanguages,
   } = useTranslation();
-  const { opened, history, clearHistory, close, open, setHistory } = useTranslateHistoryStorage();
+  const { history, clearHistory, setHistory } = useTranslateHistoryStorage();
+  const [opened, { open, close }] = useDisclosure(false);
   const trimmedQuery = query?.trim();
   const clipboard = useClipboard({ timeout: 1200 });
 

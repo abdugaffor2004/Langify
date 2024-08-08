@@ -1,9 +1,8 @@
-import { useDisclosure, useLocalStorage } from '@mantine/hooks';
+import { useLocalStorage } from '@mantine/hooks';
 
 const LS_TRANSLATION = 'translations';
 
 export const useTranslateHistoryStorage = () => {
-  const [opened, { open, close }] = useDisclosure(false);
   const [history, setHistory, clearHistory] = useLocalStorage({
     key: LS_TRANSLATION,
     defaultValue: [],
@@ -21,10 +20,7 @@ export const useTranslateHistoryStorage = () => {
   });
 
   return {
-    opened,
     history,
-    open,
-    close,
     clearHistory,
     setHistory,
   };
