@@ -19,6 +19,7 @@ import { useTranslateMutation } from '../../hooks/useTranslateMutation';
 export const Translation = () => {
   const {
     query,
+    trimmedQuery,
     translatedText,
     target,
     source,
@@ -32,16 +33,14 @@ export const Translation = () => {
   const { history, clearHistory, setHistory } = useTranslateHistoryStorage();
   const [opened, { open, close }] = useDisclosure(false);
 
-  const trimmedQuery = query?.trim();
   const { error, isError, isPending, mutate } = useTranslateMutation({
-    onSuccess: data => {
-      const {
-        text,
-        from: {
-          language: { iso },
-          text: { value },
-        },
-      } = data;
+    onSuccess: ({
+      text,
+      from: {
+        language: { iso },
+        text: { value },
+      },
+    }) => {
       translateTranslation(text, iso);
       setHistory(prevHistory => [
         {
@@ -62,7 +61,7 @@ export const Translation = () => {
         'There is no input value, please provide some meaningful data for translation',
       );
     }
-    mutate({ query: trimmedQuery, source, target });
+    mutate({ text: trimmedQuery, from: source, to: target });
   }, [trimmedQuery, mutate, source, target]);
 
   const handleHistoryClear = () => {

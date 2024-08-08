@@ -3,10 +3,10 @@ import { translate } from 'google-translate-api-browser';
 
 export const useTranslateMutation = ({ onSuccess }) =>
   useMutation({
-    mutationFn: ({ query, target, source }) =>
-      translate(query, {
-        to: target,
-        from: source,
+    mutationFn: ({ text, to, from }) =>
+      translate(text, {
+        to,
+        from,
         corsUrl: 'http://cors-anywhere.herokuapp.com/',
       }),
     onSuccess,
