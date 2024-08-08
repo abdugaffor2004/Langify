@@ -1,7 +1,5 @@
 import { Grid, Textarea, Tooltip, ActionIcon } from '@mantine/core';
 import { useCallback } from 'react';
-import { translate } from 'google-translate-api-browser';
-import { useMutation } from '@tanstack/react-query';
 import { LangSelect } from '../LangSelect';
 import {
   TbArrowsLeftRight,
@@ -16,6 +14,7 @@ import { ErrorAlert } from '../ErrorAlert';
 import { TranslationHistoryDrawer } from '../TranslationHistoryDrawer';
 import { useTranslation } from './useTranslation';
 import { useTranslateHistoryStorage } from '../../hooks/useTranslateHistoryStorage';
+import { useTranslateMutation } from '../../hooks/useTranslateMutation';
 
 export const Translation = () => {
   const {
@@ -33,35 +32,8 @@ export const Translation = () => {
   const { history, clearHistory, setHistory } = useTranslateHistoryStorage();
   const [opened, { open, close }] = useDisclosure(false);
   const trimmedQuery = query?.trim();
+  const { error, isError, isPending, mutate } = useTranslateMutation(translateTranslation);
   const clipboard = useClipboard({ timeout: 1200 });
-
-  const { mutate, isError, isPending, error } = useMutation({
-    mutationFn: () =>
-      translate(trimmedQuery, {
-        to: target,
-        from: source,
-        corsUrl: 'http://cors-anywhere.herokuapp.com/',
-      }),
-    onSuccess: data => {
-      const {
-        text,
-        from: {
-          language: { iso },
-        },
-      } = data;
-
-      translateTranslation(text, iso);
-
-      setHistory(prevHistory => [
-        {
-          query: query,
-          translatedText: text,
-          tranlatedAt: new Date(),
-        },
-        ...prevHistory,
-      ]);
-    },
-  });
 
   const handleTranslate = useCallback(() => {
     if (trimmedQuery === '') {
@@ -69,8 +41,22 @@ export const Translation = () => {
         'There is no input value, please provide some meaningful data for translation',
       );
     }
-    mutate();
-  }, [trimmedQuery, mutate]);
+    mutate(
+      { query: trimmedQuery, source, target },
+      {
+        onSuccess: data => {
+          setHistory(prevHistory => [
+            {
+              query: trimmedQuery,
+              translatedText: data.text,
+              tranlatedAt: new Date(),
+            },
+            ...prevHistory,
+          ]);
+        },
+      },
+    );
+  }, [trimmedQuery, mutate, source, target, setHistory]);
 
   const handleHistoryClear = () => {
     clearHistory();
