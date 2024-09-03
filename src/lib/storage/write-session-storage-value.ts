@@ -1,4 +1,4 @@
-export const writeSessionStorageValue = (key, value) => {
+export const writeSessionStorageValue = <T>(key: string, value: T): void => {
   try {
     sessionStorage.setItem(key, JSON.stringify(value));
   } catch (error) {
