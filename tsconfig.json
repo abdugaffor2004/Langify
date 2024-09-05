@@ -3,7 +3,7 @@
   "display": "Vite React",
   "_version": "3.0.0",
 
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "*.d.ts"],
   "exclude": ["node_modules", "dist"],
 
   "compilerOptions": {
