@@ -1,15 +1,22 @@
 import { ActionIcon, Card, Drawer, Flex, Text, Title, Tooltip } from '@mantine/core';
 import { TbTrashFilled, TbArrowNarrowRight, TbArrowNarrowDown } from 'react-icons/tb';
+import { IHistoryEntry } from '../../hooks/useTranslateHistoryStorage';
+import { FC } from 'react';
 
-export const TranslationHistoryDrawer = ({ opened, onClose, onClear, history }) => (
-  <Drawer.Root
-    position="right"
-    offset={8}
-    radius="md"
-    withCloseButton={false}
-    opened={opened}
-    onClose={onClose}
-  >
+interface ITranslationHistoryDrawer {
+  opened: boolean;
+  onClose: () => void;
+  onClear: () => void;
+  history: Array<IHistoryEntry>;
+}
+
+export const TranslationHistoryDrawer: FC<ITranslationHistoryDrawer> = ({
+  opened,
+  onClose,
+  onClear,
+  history,
+}) => (
+  <Drawer.Root position="right" offset={8} radius="md" opened={opened} onClose={onClose}>
     <Drawer.Overlay />
     <Drawer.Content>
       <Drawer.Header>
@@ -29,11 +36,11 @@ export const TranslationHistoryDrawer = ({ opened, onClose, onClear, history }) 
           {history.map((item, index) => (
             <Card key={index} padding="lg" pt="10px" shadow="sm" radius="md" withBorder>
               <Flex justify="flex-end" pb="5px">
-                <Text color="dimmed">{item.translatedAt.toLocaleDateString()}</Text>
+                <Text c="dimmed">{item.translatedAt.toLocaleDateString()}</Text>
               </Flex>
 
               <Flex
-                justify={item.query.length > 20 && 'center'}
+                justify={item.query.length > 20 ? 'center' : undefined}
                 wrap="wrap"
                 align="center"
                 gap="xs"

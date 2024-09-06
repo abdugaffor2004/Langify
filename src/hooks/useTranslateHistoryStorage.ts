@@ -2,7 +2,7 @@ import { useLocalStorage } from '@mantine/hooks';
 
 const LS_TRANSLATION = 'translations';
 
-interface IHistoryEntry {
+export interface IHistoryEntry {
   query: string;
   translatedText: string;
   translatedAt: Date;
