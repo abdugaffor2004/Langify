@@ -1,11 +1,30 @@
+import { Reducer } from 'react';
+
 export const SET_QUERY_ACTION_TYPE = 'SET_QUERY_ACTION_TYPE';
 export const TRANSLATE_ACTION_TYPE = 'SET_TRANSLATED_TEXT_ACTION_TYPE';
 export const SET_SOURCE_ACTION_TYPE = 'SET_SOURCE_ACTION_TYPE';
 export const SET_TARGET_ACTION_TYPE = 'SET_TARGET_ACTION_TYPE';
 export const SWAP_LANGUAGES_ACTION_TYPE = 'SWAP_LANGUAGES_ACTION_TYPE';
-export const SET_DETECTED_LANG_ACTION_TYPE = 'SET_DETECTED_TEXT_ACTION_TYPE';
+export const TEST_ACTION = 'TEST_ACTION';
 
-export const INITIAL_TRANSLATION_STATE = {
+export type InitialTranslationStateType = {
+  query: string;
+  translatedText: string;
+  source: string;
+  detectedSource: string;
+  target: string;
+};
+
+export type TranslationActionType =
+  | { type: typeof SET_QUERY_ACTION_TYPE; payload: string }
+  | { type: typeof SET_SOURCE_ACTION_TYPE; payload: string }
+  | { type: typeof SET_TARGET_ACTION_TYPE; payload: string }
+  | { type: typeof SWAP_LANGUAGES_ACTION_TYPE }
+  | { type: typeof SET_SOURCE_ACTION_TYPE; payload: string }
+  | { type: typeof TRANSLATE_ACTION_TYPE; payload: { text: string; language: string } }
+  | { type: typeof TEST_ACTION };
+
+export const INITIAL_TRANSLATION_STATE: InitialTranslationStateType = {
   query: '',
   translatedText: '',
   source: 'auto',
@@ -13,7 +32,10 @@ export const INITIAL_TRANSLATION_STATE = {
   target: 'ru',
 };
 
-export const translationReducer = (state = INITIAL_TRANSLATION_STATE, action) => {
+export const translationReducer: Reducer<InitialTranslationStateType, TranslationActionType> = (
+  state = INITIAL_TRANSLATION_STATE,
+  action,
+) => {
   switch (action.type) {
     case SET_QUERY_ACTION_TYPE:
       return { ...state, query: action.payload };

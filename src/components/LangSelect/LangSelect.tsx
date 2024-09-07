@@ -5,9 +5,9 @@ import { FC } from 'react';
 
 interface ILangSelectProps {
   value: string;
-  onChange: <T>(value: T) => void;
-  withAuto: Boolean;
-  detectedLang: string;
+  onChange: (value: string | null) => void;
+  withAuto?: boolean;
+  detectedLang?: string;
 }
 
 const languageOptions = Object.entries(LANGUAGES).map(([key, value]) => ({
