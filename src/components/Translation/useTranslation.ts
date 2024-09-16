@@ -1,23 +1,12 @@
 import { useEffect, useReducer } from 'react';
-import {
-  INITIAL_TRANSLATION_STATE,
-  SET_QUERY_ACTION_TYPE,
-  SET_SOURCE_ACTION_TYPE,
-  SET_TARGET_ACTION_TYPE,
-  SWAP_LANGUAGES_ACTION_TYPE,
-  TRANSLATE_ACTION_TYPE,
-  translationReducer,
-} from './reducer.ts';
+import { INITIAL_TRANSLATION_STATE, translationReducer, TranslationState } from './reducer.ts';
 import { readSessionStorageValue, writeSessionStorageValue } from '../../lib/storage';
-import { InitialTranslationStateType } from './reducer.ts';
 
 const SS_TRANSLATION = 'languages';
-const createTranslationInitialState = (
-  initialState: InitialTranslationStateType,
-): InitialTranslationStateType => {
+const createTranslationInitialState = (initialState: TranslationState): TranslationState => {
   return {
     ...initialState,
-    ...readSessionStorageValue<InitialTranslationStateType>(SS_TRANSLATION),
+    ...readSessionStorageValue(SS_TRANSLATION),
   };
 };
 
@@ -31,7 +20,7 @@ export const useTranslation = () => {
   const trimmedQuery = query?.trim();
   const translate = (text: string, iso: string) => {
     dispatch({
-      type: TRANSLATE_ACTION_TYPE,
+      type: 'TRANSLATE_ACTION_TYPE',
       payload: {
         text,
         language: iso,
@@ -40,23 +29,23 @@ export const useTranslation = () => {
   };
 
   const setQuery = (value: string) => {
-    dispatch({ type: SET_QUERY_ACTION_TYPE, payload: value });
+    dispatch({ type: 'SET_QUERY_ACTION_TYPE', payload: value });
   };
 
   const setSource = (value: string | null) => {
-    dispatch({ type: SET_SOURCE_ACTION_TYPE, payload: value! });
+    dispatch({ type: 'SET_SOURCE_ACTION_TYPE', payload: value! });
   };
 
   const setTarget = (value: string | null) => {
-    dispatch({ type: SET_TARGET_ACTION_TYPE, payload: value! });
+    dispatch({ type: 'SET_TARGET_ACTION_TYPE', payload: value! });
   };
 
   const swapLanguages = () => {
-    dispatch({ type: SWAP_LANGUAGES_ACTION_TYPE });
+    dispatch({ type: 'SWAP_LANGUAGES_ACTION_TYPE' });
   };
 
   useEffect(() => {
-    writeSessionStorageValue<InitialTranslationStateType>(SS_TRANSLATION, {
+    writeSessionStorageValue(SS_TRANSLATION, {
       source,
       target,
     });

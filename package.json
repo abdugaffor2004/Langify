@@ -21,6 +21,7 @@
     "react-icons": "^5.2.1"
   },
   "devDependencies": {
+    "@types/css-modules": "^1.0.5",
     "@types/google-translate-api": "^2.3.5",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",

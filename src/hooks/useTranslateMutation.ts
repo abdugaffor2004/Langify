@@ -1,13 +1,13 @@
 import { useMutation, UseMutationResult } from '@tanstack/react-query';
 import { translate } from 'google-translate-api-browser';
 
-interface ITranslateParams {
+interface TranslateParams {
   text: string;
   to: string;
   from: string;
 }
 
-interface ITranslateResult {
+interface TranslateResult {
   text: string;
   from: {
     language: { iso: string };
@@ -15,13 +15,13 @@ interface ITranslateResult {
   };
 }
 
-interface IUseTranslationMutationProps {
-  onSuccess: (data: ITranslateResult) => void;
+interface UseTranslationMutationProps {
+  onSuccess: (data: TranslateResult) => void;
 }
 
 export const useTranslateMutation = ({
   onSuccess,
-}: IUseTranslationMutationProps): UseMutationResult<ITranslateResult, Error, ITranslateParams> =>
+}: UseTranslationMutationProps): UseMutationResult<TranslateResult, Error, TranslateParams> =>
   useMutation({
     mutationFn: ({ text, to, from }) =>
       translate(text, {

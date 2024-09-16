@@ -1,16 +1,16 @@
 import { ActionIcon, Card, Drawer, Flex, Text, Title, Tooltip } from '@mantine/core';
 import { TbTrashFilled, TbArrowNarrowRight, TbArrowNarrowDown } from 'react-icons/tb';
-import { IHistoryEntry } from '../../hooks/useTranslateHistoryStorage';
 import { FC } from 'react';
+import { HistoryEntry } from '../../hooks/useTranslateHistoryStorage';
 
-interface ITranslationHistoryDrawer {
+interface TranslationHistoryDrawer {
   opened: boolean;
   onClose: () => void;
   onClear: () => void;
-  history: Array<IHistoryEntry>;
+  history: HistoryEntry[];
 }
 
-export const TranslationHistoryDrawer: FC<ITranslationHistoryDrawer> = ({
+export const TranslationHistoryDrawer: FC<TranslationHistoryDrawer> = ({
   opened,
   onClose,
   onClear,

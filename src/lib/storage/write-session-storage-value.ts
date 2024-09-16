@@ -1,4 +1,6 @@
-export const writeSessionStorageValue = <T>(key: string, value: Partial<T>): void => {
+import { SessionEntry } from "./read-session-storage-value";
+
+export const writeSessionStorageValue = (key: string, value: SessionEntry): void => {
   try {
     sessionStorage.setItem(key, JSON.stringify(value));
   } catch (error) {

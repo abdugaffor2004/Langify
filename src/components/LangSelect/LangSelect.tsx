@@ -3,7 +3,7 @@ import { LANGUAGES } from '../../data/languages';
 import ISO6391 from 'iso-639-1';
 import { FC } from 'react';
 
-interface ILangSelectProps {
+interface LangSelectProps {
   value: string;
   onChange: (value: string | null) => void;
   withAuto?: boolean;
@@ -15,7 +15,7 @@ const languageOptions = Object.entries(LANGUAGES).map(([key, value]) => ({
   label: value,
 }));
 
-export const LangSelect: FC<ILangSelectProps> = ({ value, onChange, withAuto, detectedLang }) => {
+export const LangSelect: FC<LangSelectProps> = ({ value, onChange, withAuto, detectedLang }) => {
   const autoLabel = detectedLang
     ? `Detected (${ISO6391.getName(detectedLang)})`
     : 'Detect language';

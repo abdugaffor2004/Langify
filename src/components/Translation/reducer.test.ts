@@ -7,7 +7,7 @@ import {
   SWAP_LANGUAGES_ACTION_TYPE,
   TEST_ACTION,
   TRANSLATE_ACTION_TYPE,
-  TranslationActionType,
+  TranslationAction,
   translationReducer,
 } from './reducer';
 
@@ -19,7 +19,7 @@ describe('translationReducer', () => {
   });
 
   it('should handle set query action', () => {
-    const action: TranslationActionType = { type: SET_QUERY_ACTION_TYPE, payload: 'Hello' };
+    const action: TranslationAction = { type: SET_QUERY_ACTION_TYPE, payload: 'Hello' };
     const expectedState = {
       ...INITIAL_TRANSLATION_STATE,
       query: action.payload,
@@ -30,7 +30,7 @@ describe('translationReducer', () => {
   });
 
   it('should handle translate action when source !== auto ', () => {
-    const action: TranslationActionType = {
+    const action: TranslationAction = {
       type: TRANSLATE_ACTION_TYPE,
       payload: { text: 'Привет', language: INITIAL_TRANSLATION_STATE.detectedSource },
     };
@@ -43,7 +43,7 @@ describe('translationReducer', () => {
   });
 
   it('should handle translate action when source === auto ', () => {
-    const action: TranslationActionType = {
+    const action: TranslationAction = {
       type: TRANSLATE_ACTION_TYPE,
       payload: { text: 'Привет', language: 'en' },
     };
@@ -57,21 +57,21 @@ describe('translationReducer', () => {
   });
 
   it('should handle set source action', () => {
-    const action: TranslationActionType = { type: SET_SOURCE_ACTION_TYPE, payload: 'en' };
+    const action: TranslationAction = { type: SET_SOURCE_ACTION_TYPE, payload: 'en' };
     const expectedState = { ...INITIAL_TRANSLATION_STATE, source: action.payload };
 
     expect(translationReducer(INITIAL_TRANSLATION_STATE, action)).toEqual(expectedState);
   });
 
   it('should handle set target action', () => {
-    const action: TranslationActionType = { type: SET_TARGET_ACTION_TYPE, payload: 'ru' };
+    const action: TranslationAction = { type: SET_TARGET_ACTION_TYPE, payload: 'ru' };
     const expectedState = { ...INITIAL_TRANSLATION_STATE, target: action.payload };
 
     expect(translationReducer(INITIAL_TRANSLATION_STATE, action)).toEqual(expectedState);
   });
 
   it('should swap languages and queries when set source action is dispatched and new source equals target', () => {
-    const action: TranslationActionType = { type: SET_SOURCE_ACTION_TYPE, payload: 'ru' };
+    const action: TranslationAction = { type: SET_SOURCE_ACTION_TYPE, payload: 'ru' };
     const initialState = {
       ...INITIAL_TRANSLATION_STATE,
       source: 'en',
@@ -91,7 +91,7 @@ describe('translationReducer', () => {
   });
 
   it('should swap languages and queries when set target action is dispatched and new target equals source', () => {
-    const action: TranslationActionType = { type: SET_TARGET_ACTION_TYPE, payload: 'en' };
+    const action: TranslationAction = { type: SET_TARGET_ACTION_TYPE, payload: 'en' };
     const initialState = {
       ...INITIAL_TRANSLATION_STATE,
       source: 'en',
@@ -111,7 +111,7 @@ describe('translationReducer', () => {
   });
 
   it('should handle set swap action', () => {
-    const action: TranslationActionType = { type: SWAP_LANGUAGES_ACTION_TYPE };
+    const action: TranslationAction = { type: SWAP_LANGUAGES_ACTION_TYPE };
     const initialState = {
       ...INITIAL_TRANSLATION_STATE,
       source: 'en',
@@ -131,7 +131,7 @@ describe('translationReducer', () => {
   });
 
   it('should handle set swap action with detected language', () => {
-    const action: TranslationActionType = { type: SWAP_LANGUAGES_ACTION_TYPE };
+    const action: TranslationAction = { type: SWAP_LANGUAGES_ACTION_TYPE };
 
     const initialState = {
       ...INITIAL_TRANSLATION_STATE,
@@ -154,7 +154,7 @@ describe('translationReducer', () => {
   });
 
   it('should handle swap action when the detected language hasnt been chosen, set source action is dispatched and new source equals target ', () => {
-    const action: TranslationActionType = { type: SET_SOURCE_ACTION_TYPE, payload: 'ru' };
+    const action: TranslationAction = { type: SET_SOURCE_ACTION_TYPE, payload: 'ru' };
 
     const initialState = {
       ...INITIAL_TRANSLATION_STATE,
