@@ -8,26 +8,26 @@ export type TranslationState = {
   target: string;
 };
 
-interface SetQueryAction {
+export interface SetQueryAction {
   type: 'SET_QUERY_ACTION_TYPE';
   payload: string;
 }
 
-interface SetSourceAction {
+export interface SetSourceAction {
   type: 'SET_SOURCE_ACTION_TYPE';
   payload: string;
 }
 
-interface SetTargetAction {
+export interface SetTargetAction {
   type: 'SET_TARGET_ACTION_TYPE';
   payload: string;
 }
 
-interface SwapLanguagesAction {
+export interface SwapLanguagesAction {
   type: 'SWAP_LANGUAGES_ACTION_TYPE';
 }
 
-interface TranslateAction {
+export interface TranslateAction {
   type: 'TRANSLATE_ACTION_TYPE';
   payload: { text: string; language: string };
 }

@@ -1,29 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { INITIAL_TRANSLATION_STATE, translationReducer } from './reducer';
-
-interface SetQueryAction {
-  type: 'SET_QUERY_ACTION_TYPE';
-  payload: string;
-}
-
-interface SetSourceAction {
-  type: 'SET_SOURCE_ACTION_TYPE';
-  payload: string;
-}
-
-interface SetTargetAction {
-  type: 'SET_TARGET_ACTION_TYPE';
-  payload: string;
-}
-
-interface SwapLanguagesAction {
-  type: 'SWAP_LANGUAGES_ACTION_TYPE';
-}
-
-interface TranslateAction {
-  type: 'TRANSLATE_ACTION_TYPE';
-  payload: { text: string; language: string };
-}
+import { INITIAL_TRANSLATION_STATE, SetQueryAction, SetSourceAction, SetTargetAction, SwapLanguagesAction, TranslateAction, translationReducer } from './reducer';
 
 describe('translationReducer', () => {
   it('should handle set query action', () => {
