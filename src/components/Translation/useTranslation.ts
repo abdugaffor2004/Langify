@@ -2,11 +2,16 @@ import { useEffect, useReducer } from 'react';
 import { INITIAL_TRANSLATION_STATE, translationReducer, TranslationState } from './reducer.ts';
 import { readSessionStorageValue, writeSessionStorageValue } from '../../lib/storage';
 
+interface SessionEntry {
+  source: string;
+  target: string;
+}
+
 const SS_TRANSLATION = 'languages';
 const createTranslationInitialState = (initialState: TranslationState): TranslationState => {
   return {
     ...initialState,
-    ...readSessionStorageValue(SS_TRANSLATION),
+    ...readSessionStorageValue<SessionEntry>(SS_TRANSLATION),
   };
 };
 
@@ -45,7 +50,7 @@ export const useTranslation = () => {
   };
 
   useEffect(() => {
-    writeSessionStorageValue(SS_TRANSLATION, {
+    writeSessionStorageValue<SessionEntry>(SS_TRANSLATION, {
       source,
       target,
     });

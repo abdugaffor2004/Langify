@@ -1,5 +1,5 @@
 import { Grid, Textarea, Tooltip, ActionIcon } from '@mantine/core';
-import { ChangeEvent, useCallback } from 'react';
+import { ChangeEvent, FC, useCallback } from 'react';
 import { LangSelect } from '../LangSelect';
 import {
   TbArrowsLeftRight,
@@ -16,7 +16,7 @@ import { useTranslation } from './useTranslation.ts';
 import { useTranslateHistoryStorage } from '../../hooks/useTranslateHistoryStorage';
 import { useTranslateMutation } from '../../hooks/useTranslateMutation';
 
-export const Translation = () => {
+export const Translation: FC = () => {
   const {
     query,
     trimmedQuery,

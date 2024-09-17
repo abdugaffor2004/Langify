@@ -1,6 +1,4 @@
-import { SessionEntry } from "./read-session-storage-value";
-
-export const writeSessionStorageValue = (key: string, value: SessionEntry): void => {
+export const writeSessionStorageValue = <T>(key: string, value: T): void => {
   try {
     sessionStorage.setItem(key, JSON.stringify(value));
   } catch (error) {

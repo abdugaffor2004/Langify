@@ -1,9 +1,4 @@
-export interface SessionEntry {
-  source: string;
-  target: string;
-}
-
-export const readSessionStorageValue = (key: string): SessionEntry | null => {
+export const readSessionStorageValue = <T>(key: string): T | null => {
   try {
     const item = sessionStorage.getItem(key);
     return item ? JSON.parse(item) : null;

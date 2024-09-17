@@ -8,41 +8,36 @@ export type TranslationState = {
   target: string;
 };
 
-interface SET_QUERY_ACTION {
+interface SetQueryAction {
   type: 'SET_QUERY_ACTION_TYPE';
   payload: string;
 }
 
-interface SET_SOURCE_ACTION {
+interface SetSourceAction {
   type: 'SET_SOURCE_ACTION_TYPE';
   payload: string;
 }
 
-interface SET_TARGET_ACTION {
+interface SetTargetAction {
   type: 'SET_TARGET_ACTION_TYPE';
   payload: string;
 }
 
-interface SWAP_LANGUAGES_ACTION {
+interface SwapLanguagesAction {
   type: 'SWAP_LANGUAGES_ACTION_TYPE';
 }
 
-interface TRANSLATE_ACTION {
+interface TranslateAction {
   type: 'TRANSLATE_ACTION_TYPE';
   payload: { text: string; language: string };
 }
 
-interface TEST_ACTION {
-  type: 'TEST_ACTION';
-}
-
 export type TranslationAction =
-  | SET_QUERY_ACTION
-  | SET_SOURCE_ACTION
-  | SET_TARGET_ACTION
-  | SWAP_LANGUAGES_ACTION
-  | TRANSLATE_ACTION
-  | TEST_ACTION;
+  | SetQueryAction
+  | SetSourceAction
+  | SetTargetAction
+  | SwapLanguagesAction
+  | TranslateAction;
 
 export const INITIAL_TRANSLATION_STATE: TranslationState = {
   query: '',
