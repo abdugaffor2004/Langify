@@ -1,10 +1,11 @@
 import { useEffect, useReducer } from 'react';
 import { INITIAL_TRANSLATION_STATE, translationReducer, TranslationState } from './reducer.ts';
 import { readSessionStorageValue, writeSessionStorageValue } from '../../lib/storage';
+import { LangKey } from 'google-translate-api-browser/types/LangKey.js';
 
 interface SessionEntry {
-  source: string;
-  target: string;
+  source: LangKey;
+  target: LangKey;
 }
 
 const SS_TRANSLATION = 'languages';

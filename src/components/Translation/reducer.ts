@@ -1,11 +1,12 @@
+import { LangKey } from 'google-translate-api-browser/types/LangKey';
 import { Reducer } from 'react';
 
 export type TranslationState = {
   query: string;
   translatedText: string;
-  source: string;
+  source: LangKey;
   detectedSource: string;
-  target: string;
+  target: LangKey;
 };
 
 export interface SetQueryAction {
@@ -61,16 +62,16 @@ export const translationReducer: Reducer<TranslationState, TranslationAction> = 
         translatedText: action.payload.text,
         detectedSource:
           state.source === 'auto' && action.payload.language
-            ? action.payload.language
+            ? (action.payload.language as LangKey)
             : state.detectedSource,
       };
 
     case 'SET_SOURCE_ACTION_TYPE': {
       if (action.payload !== state.target) {
-        return { ...state, source: action.payload };
+        return { ...state, source: action.payload as LangKey };
       }
 
-      const sourceLang = state.source === 'auto' ? 'en' : state.source;
+      const sourceLang: LangKey = state.source === 'auto' ? 'en' : state.source;
       return {
         ...state,
         source: state.target,
@@ -82,7 +83,7 @@ export const translationReducer: Reducer<TranslationState, TranslationAction> = 
 
     case 'SET_TARGET_ACTION_TYPE': {
       if (action.payload !== state.source) {
-        return { ...state, target: action.payload };
+        return { ...state, target: action.payload as LangKey };
       }
       return {
         ...state,
@@ -94,7 +95,8 @@ export const translationReducer: Reducer<TranslationState, TranslationAction> = 
     }
 
     case 'SWAP_LANGUAGES_ACTION_TYPE': {
-      const sourceLang = state.source === 'auto' ? state.detectedSource : state.source;
+      const sourceLang: LangKey =
+        state.source === 'auto' ? (state.detectedSource as LangKey) : state.source;
       return {
         ...state,
         source: state.target,

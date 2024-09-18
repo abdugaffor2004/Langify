@@ -19,7 +19,13 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": "./",
+    "paths": {
+      "google-translate-api-browser/types/*": [
+        "node_modules/google-translate-api-browser/dest/types/*"
+      ]
+    }
   },
   "include": ["src"]
 }

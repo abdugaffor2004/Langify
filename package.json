@@ -9,7 +9,7 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "vitest",
-    "type-check": "npx tsc --build"
+    "type-check": "tsc --build"
   },
   "dependencies": {
     "@mantine/core": "^7.11.1",
