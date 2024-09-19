@@ -1,7 +1,7 @@
 import { useMutation, UseMutationResult } from '@tanstack/react-query';
-import translate from 'node_modules/google-translate-api-browser/dest';
-import { TranslateOptions } from 'node_modules/google-translate-api-browser/dest/types/TranslateOptions';
-import { TranslationResult } from 'node_modules/google-translate-api-browser/dest/types/TranslationResult';
+import { translate } from 'google-translate-api-browser/translate';
+import { TranslateOptions } from 'google-translate-api-browser/types/TranslateOptions';
+import { TranslationResult } from 'google-translate-api-browser/types/TranslationResult';
 
 interface UseTranslationMutationOptions {
   onSuccess: (data: TranslationResult) => void;

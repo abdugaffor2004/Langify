@@ -153,7 +153,7 @@ describe('translationReducer', () => {
       ...INITIAL_TRANSLATION_STATE,
       source: 'auto',
       target: 'ru',
-      detectedSource: '',
+      detectedSource: 'auto',
     };
 
     const expectedState = {

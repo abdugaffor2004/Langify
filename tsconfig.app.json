@@ -20,10 +20,10 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "baseUrl": "./",
+    "baseUrl": ".",
     "paths": {
-      "google-translate-api-browser/types/*": [
-        "node_modules/google-translate-api-browser/dest/types/*"
+      "google-translate-api-browser/*": [
+        "node_modules/google-translate-api-browser/dest/*"
       ]
     }
   },

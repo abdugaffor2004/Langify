@@ -1,20 +1,18 @@
 import { useEffect, useReducer } from 'react';
 import { INITIAL_TRANSLATION_STATE, translationReducer, TranslationState } from './reducer.ts';
 import { readSessionStorageValue, writeSessionStorageValue } from '../../lib/storage';
-import { LangKey } from 'google-translate-api-browser/types/LangKey.js';
+import { LanguageKey } from 'src/data/languages.ts';
 
 interface SessionEntry {
-  source: LangKey;
-  target: LangKey;
+  source: LanguageKey;
+  target: LanguageKey;
 }
 
 const SS_TRANSLATION = 'languages';
-const createTranslationInitialState = (initialState: TranslationState): TranslationState => {
-  return {
-    ...initialState,
-    ...readSessionStorageValue<SessionEntry>(SS_TRANSLATION),
-  };
-};
+const createTranslationInitialState = (initialState: TranslationState): TranslationState => ({
+  ...initialState,
+  ...readSessionStorageValue<SessionEntry>(SS_TRANSLATION),
+});
 
 export const useTranslation = () => {
   const [{ query, translatedText, target, source, detectedSource }, dispatch] = useReducer(

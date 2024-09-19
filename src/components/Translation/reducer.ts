@@ -1,12 +1,12 @@
-import { LangKey } from 'google-translate-api-browser/types/LangKey';
 import { Reducer } from 'react';
+import { LanguageKey } from 'src/data/languages';
 
 export type TranslationState = {
   query: string;
   translatedText: string;
-  source: LangKey;
-  detectedSource: string;
-  target: LangKey;
+  source: LanguageKey;
+  detectedSource: LanguageKey;
+  target: LanguageKey;
 };
 
 export interface SetQueryAction {
@@ -44,7 +44,7 @@ export const INITIAL_TRANSLATION_STATE: TranslationState = {
   query: '',
   translatedText: '',
   source: 'auto',
-  detectedSource: '',
+  detectedSource: 'auto',
   target: 'ru',
 };
 
@@ -62,16 +62,16 @@ export const translationReducer: Reducer<TranslationState, TranslationAction> = 
         translatedText: action.payload.text,
         detectedSource:
           state.source === 'auto' && action.payload.language
-            ? (action.payload.language as LangKey)
+            ? (action.payload.language as LanguageKey)
             : state.detectedSource,
       };
 
     case 'SET_SOURCE_ACTION_TYPE': {
       if (action.payload !== state.target) {
-        return { ...state, source: action.payload as LangKey };
+        return { ...state, source: action.payload as LanguageKey };
       }
 
-      const sourceLang: LangKey = state.source === 'auto' ? 'en' : state.source;
+      const sourceLang = state.source === 'auto' ? 'en' : state.source;
       return {
         ...state,
         source: state.target,
@@ -83,7 +83,7 @@ export const translationReducer: Reducer<TranslationState, TranslationAction> = 
 
     case 'SET_TARGET_ACTION_TYPE': {
       if (action.payload !== state.source) {
-        return { ...state, target: action.payload as LangKey };
+        return { ...state, target: action.payload as LanguageKey };
       }
       return {
         ...state,
@@ -95,8 +95,7 @@ export const translationReducer: Reducer<TranslationState, TranslationAction> = 
     }
 
     case 'SWAP_LANGUAGES_ACTION_TYPE': {
-      const sourceLang: LangKey =
-        state.source === 'auto' ? (state.detectedSource as LangKey) : state.source;
+      const sourceLang = state.source === 'auto' ? state.detectedSource : state.source;
       return {
         ...state,
         source: state.target,
