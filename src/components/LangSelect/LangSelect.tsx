@@ -16,7 +16,7 @@ const languageOptions = Object.entries(LANGUAGES).map(([key, value]) => ({
 }));
 
 export const LangSelect: FC<LangSelectProps> = ({ value, onChange, withAuto, detectedLang }) => {
-  const autoLabel = detectedLang
+  const autoLabel = detectedLang && detectedLang !== 'auto'
     ? `Detected (${ISO6391.getName(detectedLang)})`
     : 'Detect language';
 

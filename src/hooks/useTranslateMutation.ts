@@ -1,14 +1,17 @@
 import { useMutation, UseMutationResult } from '@tanstack/react-query';
-import { translate } from 'google-translate-api-browser/translate';
-import { TranslateOptions } from 'google-translate-api-browser/types/TranslateOptions';
 import { TranslationResult } from 'google-translate-api-browser/types/TranslationResult';
+import { Language } from '../data/languages';
+import translate from 'google-translate-api-browser';
+
 
 interface UseTranslationMutationOptions {
   onSuccess: (data: TranslationResult) => void;
 }
 
-interface TranslateRequestOptions extends Pick<TranslateOptions, 'from' | 'to'> {
+interface TranslateRequestOptions {
   text: string;
+  from: Language;
+  to: Language;
 }
 
 export const useTranslateMutation = ({

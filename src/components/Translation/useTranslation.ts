@@ -1,11 +1,12 @@
 import { useEffect, useReducer } from 'react';
 import { INITIAL_TRANSLATION_STATE, translationReducer, TranslationState } from './reducer.ts';
 import { readSessionStorageValue, writeSessionStorageValue } from '../../lib/storage';
-import { LanguageKey } from 'src/data/languages.ts';
+import { Language } from '../../data/languages.ts';
+
 
 interface SessionEntry {
-  source: LanguageKey;
-  target: LanguageKey;
+  source: Language;
+  target: Language;
 }
 
 const SS_TRANSLATION = 'languages';

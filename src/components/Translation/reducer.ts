@@ -1,12 +1,12 @@
 import { Reducer } from 'react';
-import { LanguageKey } from 'src/data/languages';
+import { Language } from '../../data/languages';
 
 export type TranslationState = {
   query: string;
   translatedText: string;
-  source: LanguageKey;
-  detectedSource: LanguageKey;
-  target: LanguageKey;
+  source: Language;
+  detectedSource: Language;
+  target: Language;
 };
 
 export interface SetQueryAction {
@@ -62,13 +62,13 @@ export const translationReducer: Reducer<TranslationState, TranslationAction> = 
         translatedText: action.payload.text,
         detectedSource:
           state.source === 'auto' && action.payload.language
-            ? (action.payload.language as LanguageKey)
+            ? (action.payload.language as Language)
             : state.detectedSource,
       };
 
     case 'SET_SOURCE_ACTION_TYPE': {
       if (action.payload !== state.target) {
-        return { ...state, source: action.payload as LanguageKey };
+        return { ...state, source: action.payload as Language };
       }
 
       const sourceLang = state.source === 'auto' ? 'en' : state.source;
@@ -83,7 +83,7 @@ export const translationReducer: Reducer<TranslationState, TranslationAction> = 
 
     case 'SET_TARGET_ACTION_TYPE': {
       if (action.payload !== state.source) {
-        return { ...state, target: action.payload as LanguageKey };
+        return { ...state, target: action.payload as Language };
       }
       return {
         ...state,

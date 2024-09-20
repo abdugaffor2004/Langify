@@ -17,10 +17,6 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "baseUrl": ".",
-    "paths": {
-      "google-translate-api-browser/*": ["node_modules/google-translate-api-browser/dest/*"]
-    }
   },
   "include": ["vite.config.ts"]
 }
