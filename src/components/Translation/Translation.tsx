@@ -1,5 +1,5 @@
 import { Grid, Textarea, Tooltip, ActionIcon } from '@mantine/core';
-import { useCallback } from 'react';
+import { ChangeEvent, FC, useCallback } from 'react';
 import { LangSelect } from '../LangSelect';
 import {
   TbArrowsLeftRight,
@@ -12,11 +12,11 @@ import styles from './Translation.module.css';
 import { useClipboard, useDisclosure } from '@mantine/hooks';
 import { ErrorAlert } from '../ErrorAlert';
 import { TranslationHistoryDrawer } from '../TranslationHistoryDrawer';
-import { useTranslation } from './useTranslation';
+import { useTranslation } from './useTranslation.ts';
 import { useTranslateHistoryStorage } from '../../hooks/useTranslateHistoryStorage';
 import { useTranslateMutation } from '../../hooks/useTranslateMutation';
 
-export const Translation = () => {
+export const Translation: FC = () => {
   const {
     query,
     trimmedQuery,
@@ -73,7 +73,7 @@ export const Translation = () => {
     clipboard.copy(translatedText);
   };
 
-  const handleInputChange = event => {
+  const handleInputChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setQuery(event.currentTarget.value);
   };
 
